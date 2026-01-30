@@ -16,8 +16,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
 
 import * as z from "zod";
 
@@ -27,16 +29,26 @@ const formSchema = z.object({
 });
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const handleGoogleLogin = async () => {
-    console.log("Google login");
-  };
   const form = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      const toastId = toast.loading("Loging in...");
+      try {
+        const { data, error } = await authClient.signIn.email({
+          email: value.email,
+          password: value.password,
+        });
+        if (error) {
+          toast.error(error.message, { id: toastId });
+          return;
+        }
+        toast.success(`Welcome ${data.user.name}!!!`, { id: toastId });
+      } catch (error) {
+        toast.error("Something went wrong, Please try again", { id: toastId });
+      }
     },
     validators: {
       onSubmit: formSchema,
@@ -110,15 +122,6 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       <CardFooter className="flex flex-col gap-3">
         <Button className="w-full" form="login-form" type="submit">
           Submit
-        </Button>
-        <h3>or</h3>
-        <Button
-          onClick={() => handleGoogleLogin()}
-          variant="outline"
-          type="button"
-          className="w-full"
-        >
-          Continue with Google
         </Button>
       </CardFooter>
     </Card>
