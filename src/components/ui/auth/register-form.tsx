@@ -31,12 +31,23 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { updateUserRole } from "@/actions/user/user.action";
 
-const formSchema = z.object({
-  name: z.string().min(4, "This field is required (minimum length is 4)"),
-  password: z.string().min(8, "Minimum length is 8"),
-  email: z.email(),
-  role: z.enum(["STUDENT", "TUTOR"]),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(4, "This field is required (minimum length is 4)"),
+    email: z.email(),
+    password: z.string().min(8, "Minimum length is 8"),
+    confirmPassword: z.string().min(8, "Minimum length is 8"),
+    role: z.enum(["STUDENT", "TUTOR"]),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        path: ["confirmPassword"],
+        message: "Passwords do not match",
+        code: "custom",
+      });
+    }
+  });
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
   const form = useForm({
@@ -45,6 +56,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
       email: "",
       password: "",
       role: "STUDENT",
+      confirmPassword: "",
     },
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Creating User...");
@@ -67,6 +79,9 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         }
 
         toast.success("User created successfully!!!", { id: toastId });
+        setTimeout(() => {
+          toast.info("Please verify your email before login", { id: toastId });
+        }, 2000);
       } catch (error) {
         toast.error("Something went wrong, Please try again", { id: toastId });
       }
@@ -161,8 +176,31 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                       aria-invalid={isInvalid}
                     ></Input>
                     {isInvalid && (
-                      <FieldError errors={field.state.meta.errors}></FieldError>
+                      <FieldError errors={field.state.meta.errors} />
                     )}
+                  </Field>
+                );
+              }}
+            ></form.Field>
+            <form.Field
+              name="confirmPassword"
+              // eslint-disable-next-line react/no-children-prop
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      type="password"
+                      name={field.name}
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    ></Input>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -170,7 +208,6 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                 );
               }}
             ></form.Field>
-
             <form.Field name="role">
               {(field) => {
                 const isInvalid =
