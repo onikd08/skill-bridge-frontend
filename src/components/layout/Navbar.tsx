@@ -58,18 +58,11 @@ const Navbar = ({
     url: "/",
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
     alt: "logo",
-    title: "NextBlog",
+    title: "Skill-Bridge",
   },
   menu = [
     { title: "Home", url: "/" },
-    {
-      title: "Blogs",
-      url: "/blogs",
-    },
-    {
-      title: "About",
-      url: "/about",
-    },
+
     {
       title: "Dashboard",
       url: "/dashboard",
