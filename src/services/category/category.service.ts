@@ -4,9 +4,15 @@ import { cookies } from "next/headers";
 const API_URL = env.API_URL;
 
 const getAllCategories = async () => {
+  const cookieStore = await cookies();
+
   try {
     const res = await fetch(`${API_URL}/category`, {
       next: { tags: ["categories"] },
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
     });
     const data = await res.json();
     return data;
