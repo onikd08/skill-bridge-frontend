@@ -71,11 +71,19 @@ export default function CategoryManagement({
 
     try {
       if (editingCategory) {
-        console.log(editingCategory.id);
-        await updateCategory(editingCategory.id, name);
+        const { data, error } = await updateCategory(editingCategory.id, name);
+        console.log(data);
+        if (error) {
+          toast.error("This category already exists", { id: toastId });
+          return;
+        }
         toast.success("Category updated successfully", { id: toastId });
       } else {
-        await createCategory(name);
+        const { data, error } = await createCategory(name);
+        if (error) {
+          toast.error("This category already exists", { id: toastId });
+          return;
+        }
         toast.success("Category created successfully", { id: toastId });
       }
 

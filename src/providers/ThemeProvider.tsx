@@ -11,7 +11,7 @@ export function ThemeProvider({
   return (
     <NextThemesProvider {...props}>
       {children}
-      <Toaster />
+      <Toaster richColors />
     </NextThemesProvider>
   );
 }
