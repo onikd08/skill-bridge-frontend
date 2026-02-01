@@ -29,7 +29,6 @@ import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 
 import * as z from "zod";
-import { updateUserRole } from "@/actions/user/user.action";
 
 const formSchema = z
   .object({
@@ -65,17 +64,11 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
           name: value.name,
           email: value.email,
           password: value.password,
+          role: value.role,
         });
         if (error) {
           toast.error(error.message, { id: toastId });
           return;
-        }
-        if (value.role !== "STUDENT") {
-          const result = await updateUserRole(data.user.id, value.role);
-          if (result.error) {
-            toast.error(result.error.message, { id: toastId });
-            return;
-          }
         }
 
         toast.success("User created successfully!!!", { id: toastId });
