@@ -70,6 +70,36 @@ const getTutorAvailability = async () => {
   }
 };
 
+const getAllTutors = async () => {
+  try {
+    const res = await fetch(`${API_URL}/tutor/profile/all-tutors`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Something went wrong",
+      },
+    };
+  }
+};
+
+const getTutorWithId = async (id: string) => {
+  try {
+    const res = await fetch(`${API_URL}/tutor/profile/${id}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Something went wrong",
+      },
+    };
+  }
+};
+
 export type Availability = {
   dayOfWeek: number;
   startTime: string;
@@ -105,6 +135,8 @@ const tutorService = {
   createTutorProfile,
   getTutorAvailability,
   createTutorAvailability,
+  getAllTutors,
+  getTutorWithId,
 };
 
 export default tutorService;

@@ -3,8 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Star, Search, Calendar, Users } from "lucide-react";
+import tutorService from "@/services/tutor/tutor.service";
+import Link from "next/link";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { data } = await tutorService.getAllTutors();
+  console.log(data);
+  const tutors = data || [];
   return (
     <main className="flex flex-col gap-24">
       {/* 1️⃣ Hero Section */}
@@ -118,26 +123,32 @@ export default function HomePage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Card key={i} className="hover:shadow-xl transition-shadow">
-              <CardHeader>
-                <CardTitle>Jane Doe</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Full‑Stack Development
-                </p>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2">
-                <div className="flex items-center gap-1 text-sm">
-                  <Star className="h-4 w-4 fill-yellow-400 stroke-yellow-400" />
-                  <span>4.9 (120 reviews)</span>
-                </div>
-                <p className="text-sm text-muted-foreground">$40 / hour</p>
-                <Button size="sm" className="mt-2">
-                  View Profile
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+          {tutors.length &&
+            tutors.map((tutor: any) => (
+              <Card
+                key={tutor.id}
+                className="hover:shadow-xl transition-shadow"
+              >
+                <CardHeader>
+                  <CardTitle>{tutor.user.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {tutor.subject}
+                  </p>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                  <div className="flex items-center gap-1 text-sm">
+                    <Star className="h-4 w-4 fill-yellow-400 stroke-yellow-400" />
+                    <span>
+                      {tutor.averageRating} ({tutor.totalReviews} reviews)
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">$40 / hour</p>
+                  <Button asChild size="sm" className="mt-2">
+                    <Link href={`/tutors/${tutor.id}`}>View Profile</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
         </div>
       </section>
     </main>
