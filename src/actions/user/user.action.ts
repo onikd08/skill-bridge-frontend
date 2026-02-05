@@ -17,3 +17,8 @@ export const deleteUser = async (userId: string) => {
   updateTag("users");
   return data;
 };
+
+export const getUserSession = async () => {
+  const data = await userService.getUserSession();
+  return data;
+};

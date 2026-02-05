@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useForm } from "@tanstack/react-form";
+import { User } from "better-auth";
+import { use } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -45,13 +47,21 @@ type Props = {
   mode: "create" | "update";
   categories: Category[];
   tutorProfile?: TutorProfile;
+  user: User;
 };
 
-export function TutorProfileForm({ mode, categories, tutorProfile }: Props) {
+export function TutorProfileForm({
+  mode,
+  categories,
+  tutorProfile,
+  user,
+}: Props) {
   const isUpdate = mode === "update";
 
   const form = useForm({
     defaultValues: {
+      name: user.name,
+      email: user.email,
       bio: tutorProfile?.bio ?? "",
       subject: tutorProfile?.subject ?? "",
       hourlyRate: tutorProfile?.hourlyRate ?? 0,
@@ -115,6 +125,35 @@ export function TutorProfileForm({ mode, categories, tutorProfile }: Props) {
           }}
         >
           <FieldGroup>
+            <form.Field name="name">
+              {(field) => {
+                const invalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={invalid}>
+                    <FieldLabel>Name</FieldLabel>
+                    <Input value={field.state.value} readOnly />
+                    {invalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="email">
+              {(field) => {
+                const invalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={invalid}>
+                    <FieldLabel>Email</FieldLabel>
+                    <Input value={field.state.value} readOnly />
+                    {invalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
+            </form.Field>
             {/* Subject */}
             <form.Field name="subject">
               {(field) => {
