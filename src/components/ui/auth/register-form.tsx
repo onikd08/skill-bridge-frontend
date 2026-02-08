@@ -29,6 +29,7 @@ import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -49,6 +50,7 @@ const formSchema = z
   });
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const router = useRouter();
   const form = useForm({
     defaultValues: {
       name: "",
@@ -72,6 +74,8 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         }
 
         toast.success("User created successfully!!!", { id: toastId });
+        router.push("/login");
+        router.refresh();
         setTimeout(() => {
           toast.info("Please verify your email before login", { id: toastId });
         }, 2000);
