@@ -37,7 +37,14 @@ const createTutorProfile = async (tutor: TutorProfile) => {
       body: JSON.stringify(tutor),
       next: { tags: ["tutor-profile"] },
     });
-    return await res.json();
+    const data = await res.json();
+    if (!res.ok) {
+      return {
+        data: null,
+        error: data?.error ?? { message: data?.message ?? res.statusText },
+      };
+    }
+    return { data, error: null };
   } catch (error) {
     return {
       data: null,
@@ -130,6 +137,37 @@ const createTutorAvailability = async (payload: Availability) => {
   }
 };
 
+const updateTutorProfile = async (payload: TutorProfile) => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/tutor/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    console.log(data);
+    if (!res.ok) {
+      console.log("not okay");
+      return {
+        data: null,
+        error: data?.error ?? { message: data?.message ?? res.statusText },
+      };
+    }
+    return { data, error: null };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
 const tutorService = {
   getTutorProfile,
   createTutorProfile,
@@ -137,6 +175,7 @@ const tutorService = {
   createTutorAvailability,
   getAllTutors,
   getTutorWithId,
+  updateTutorProfile,
 };
 
 export default tutorService;

@@ -15,3 +15,9 @@ export const createTutorAvailability = async (payload: Availability) => {
   updateTag("tutor-availability");
   return data;
 };
+
+export const updateTutorProfile = async (payload: TutorProfile) => {
+  const data = await tutorService.updateTutorProfile(payload);
+  updateTag("tutor-profile");
+  return data;
+};

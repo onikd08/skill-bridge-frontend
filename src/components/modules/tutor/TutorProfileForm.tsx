@@ -1,6 +1,9 @@
 "use client";
 
-import { createTutorProfile } from "@/actions/tutor/tutor.action";
+import {
+  createTutorProfile,
+  updateTutorProfile,
+} from "@/actions/tutor/tutor.action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -79,8 +82,13 @@ export function TutorProfileForm({
 
       try {
         if (isUpdate) {
-          // await updateTutorProfile(value);
-          console.log("UPDATE", value);
+          const payload = {
+            ...value,
+            tutorCategories: value.categoryIds.map((id) => ({
+              categoryId: id,
+            })),
+          };
+          await updateTutorProfile(payload);
         } else {
           const payload = {
             ...value,
