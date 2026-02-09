@@ -8,7 +8,6 @@ import Link from "next/link";
 
 export default async function HomePage() {
   const { data } = await tutorService.getAllTutors();
-  console.log(data);
   const tutors = data || [];
   return (
     <main className="flex flex-col gap-24">
