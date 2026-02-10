@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { bookSlot } from "@/actions/student/student.action";
+import { formatDate, formatTime } from "@/lib/utils";
 
 // ---------------- Types ----------------
 type Availability = {
@@ -28,19 +29,6 @@ type Availability = {
   endAt: string;
   isActive: boolean;
 };
-
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-
-const formatTime = (iso: string) =>
-  new Date(iso).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
 export default function TutorBookingCard({
   tutorName,
@@ -54,19 +42,21 @@ export default function TutorBookingCard({
   const [selected, setSelected] = useState<Availability | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  console.log({ tutorName, tutorProfileId, availability });
-
   const handleBooking = () => {
     if (!selected) return;
 
     startTransition(async () => {
       try {
-        await bookSlot({
+        const { data, error } = await bookSlot({
           tutorProfileId,
           startTime: selected.startAt,
           endTime: selected.endAt,
         });
-
+        if (!data) {
+          toast.error(error?.message || "Failed to book slot");
+          setSelected(null);
+          return;
+        }
         toast.success("Booking confirmed");
         setSelected(null);
       } catch (err: any) {

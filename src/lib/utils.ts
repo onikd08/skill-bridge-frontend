@@ -5,22 +5,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(
-  value?: string | Date | null,
-  locale = "en-US",
-  options?: Intl.DateTimeFormatOptions,
-) {
-  if (!value) return "";
-  const date = typeof value === "string" ? new Date(value) : value;
-  if (Number.isNaN(date.getTime())) return String(value);
-
-  const defaultOptions: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
+export function formatDate(date: string) {
+  return new Date(date).toLocaleDateString(undefined, {
+    weekday: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  };
+    month: "short",
+    year: "numeric",
+  });
+}
 
-  return date.toLocaleString(locale, { ...defaultOptions, ...options });
+export function formatTime(date: string) {
+  return new Date(date).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }

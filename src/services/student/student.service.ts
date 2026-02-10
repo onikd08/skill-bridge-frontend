@@ -40,8 +40,65 @@ const bookSlot = async (payload: {
   }
 };
 
+const getMyBookings = async () => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/bookings`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+      next: { tags: ["bookings"] },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
+const cancelBooking = async (bookingId: string) => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/bookings`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+      body: JSON.stringify({ bookingId }),
+    });
+    if (!res.ok) {
+      return {
+        data: null,
+        error: {
+          message: "Something went wrong",
+        },
+      };
+    }
+    const data = await res.json();
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
 const studentService = {
   bookSlot,
+  cancelBooking,
+  getMyBookings,
 };
 
 export default studentService;
