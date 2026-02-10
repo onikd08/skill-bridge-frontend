@@ -95,10 +95,61 @@ const cancelBooking = async (bookingId: string) => {
     };
   }
 };
+
+const getStudentInfo = async () => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/student/profile`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+      next: { tags: ["student-profile"] },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
+const updateStudentInfo = async (payload: {
+  image?: string | null;
+  name?: string;
+}) => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/student/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+      next: { tags: ["student-profile"] },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
 const studentService = {
   bookSlot,
   cancelBooking,
   getMyBookings,
+  getStudentInfo,
+  updateStudentInfo,
 };
 
 export default studentService;

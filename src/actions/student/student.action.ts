@@ -22,3 +22,17 @@ export const cancelBooking = async (bookingId: string) => {
   updateTag("bookings");
   return data;
 };
+
+export const getStudentInfo = async () => {
+  const data = await studentService.getStudentInfo();
+  return data;
+};
+
+export const updateStudentInfo = async (payload: {
+  image?: string | null;
+  name?: string;
+}) => {
+  const data = await studentService.updateStudentInfo(payload);
+  updateTag("student-profile");
+  return data;
+};
