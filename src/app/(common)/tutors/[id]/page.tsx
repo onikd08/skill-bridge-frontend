@@ -33,6 +33,7 @@ const TutorProfilePage = async ({
       <TutorProfileCard tutor={tutor} />
       <TutorBookingCard
         tutorName={tutor.user.name}
+        tutorProfileId={id}
         availability={availability}
       />
     </div>
