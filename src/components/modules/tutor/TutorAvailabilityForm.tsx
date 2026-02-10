@@ -10,67 +10,59 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 import { useState } from "react";
-import { createTutorAvailability } from "@/actions/tutor/tutor.action";
+import {
+  createTutorAvailability,
+  deleteAvailability,
+  updateAvailabilityStatus,
+} from "@/actions/tutor/tutor.action";
 
 type Availability = {
   id: string;
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
+  startAt: string;
+  endAt: string;
   isActive: boolean;
 };
 
-const DAYS = [
-  { label: "Sunday", value: 0 },
-  { label: "Monday", value: 1 },
-  { label: "Tuesday", value: 2 },
-  { label: "Wednesday", value: 3 },
-  { label: "Thursday", value: 4 },
-  { label: "Friday", value: 5 },
-  { label: "Saturday", value: 6 },
-];
+function toISO(date: string, time: string) {
+  return new Date(`${date}T${time}`).toISOString();
+}
 
 export default function TutorAvailabilityForm({
   availability,
 }: {
   availability: Availability[];
 }) {
-  const [dayOfWeek, setDayOfWeek] = useState<number | null>(null);
+  const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
   const handleSubmit = async () => {
-    if (dayOfWeek === null || !startTime || !endTime) {
+    if (!date || !startTime || !endTime) {
       toast.error("All fields are required");
       return;
     }
 
-    if (startTime >= endTime) {
+    const startAt = toISO(date, startTime);
+    const endAt = toISO(date, endTime);
+
+    if (new Date(startAt) >= new Date(endAt)) {
       toast.error("Start time must be before end time");
       return;
     }
 
     try {
-      const data = await createTutorAvailability({
-        dayOfWeek,
-        startTime,
-        endTime,
+      await createTutorAvailability({
+        startAt,
+        endAt,
       });
 
-      console.log(data);
       toast.success("Availability added");
+      setDate("");
       setStartTime("");
       setEndTime("");
-    } catch {
+    } catch (error) {
       toast.error("Failed to add availability");
     }
   };
@@ -80,26 +72,19 @@ export default function TutorAvailabilityForm({
       <CardHeader>
         <CardTitle>Availability</CardTitle>
         <CardDescription>
-          Set your weekly availability for bookings
+          Set your availability using date & time
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Day of week */}
-        <Select onValueChange={(v) => setDayOfWeek(Number(v))}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select day" />
-          </SelectTrigger>
-          <SelectContent>
-            {DAYS.map((day) => (
-              <SelectItem key={day.value} value={day.value.toString()}>
-                {day.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* Date */}
+        <Input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
 
-        {/* Time inputs */}
+        {/* Time */}
         <div className="flex gap-3">
           <Input
             type="time"
@@ -125,20 +110,54 @@ export default function TutorAvailabilityForm({
             {availability.map((slot) => (
               <div
                 key={slot.id}
-                className="flex justify-between rounded border p-2 text-sm"
+                className="flex items-center justify-between rounded border p-3 text-sm"
               >
-                <span>
-                  {DAYS.find((d) => d.value === slot.dayOfWeek)?.label} •{" "}
-                  {slot.startTime} – {slot.endTime}
-                </span>
+                <div>
+                  <div>
+                    {new Date(slot.startAt).toLocaleString()} –{" "}
+                    {new Date(slot.endAt).toLocaleTimeString()}
+                  </div>
 
-                <span
-                  className={
-                    slot.isActive ? "text-green-600" : "text-muted-foreground"
-                  }
-                >
-                  {slot.isActive ? "Active" : "Inactive"}
-                </span>
+                  <span
+                    className={
+                      slot.isActive ? "text-green-600" : "text-muted-foreground"
+                    }
+                  >
+                    {slot.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={async () => {
+                      try {
+                        await updateAvailabilityStatus(slot.id);
+                        toast.success("Availability updated");
+                      } catch {
+                        toast.error("Failed to update availability");
+                      }
+                    }}
+                  >
+                    {slot.isActive ? "Deactivate" : "Activate"}
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={async () => {
+                      try {
+                        await deleteAvailability(slot.id);
+                        toast.success("Availability deleted");
+                      } catch {
+                        toast.error("Failed to delete availability");
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

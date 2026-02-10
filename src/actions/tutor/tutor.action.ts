@@ -21,3 +21,15 @@ export const updateTutorProfile = async (payload: TutorProfile) => {
   updateTag("tutor-profile");
   return data;
 };
+
+export const deleteAvailability = async (id: string) => {
+  const data = await tutorService.deleteAvailability(id);
+  updateTag("tutor-availability");
+  return data;
+};
+
+export const updateAvailabilityStatus = async (id: string) => {
+  const data = await tutorService.updateAvailabilityStatus(id);
+  updateTag("tutor-availability");
+  return data;
+};

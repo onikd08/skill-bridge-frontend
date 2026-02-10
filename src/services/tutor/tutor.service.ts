@@ -108,9 +108,8 @@ const getTutorWithId = async (id: string) => {
 };
 
 export type Availability = {
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
+  startAt: string;
+  endAt: string;
 };
 
 const createTutorAvailability = async (payload: Availability) => {
@@ -168,6 +167,50 @@ const updateTutorProfile = async (payload: TutorProfile) => {
   }
 };
 
+const deleteAvailability = async (id: string) => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/tutor/availability/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
+const updateAvailabilityStatus = async (id: string) => {
+  const cookieStorage = await cookies();
+  try {
+    const res = await fetch(`${API_URL}/tutor/availability/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStorage.toString(),
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
 const tutorService = {
   getTutorProfile,
   createTutorProfile,
@@ -176,6 +219,8 @@ const tutorService = {
   getAllTutors,
   getTutorWithId,
   updateTutorProfile,
+  deleteAvailability,
+  updateAvailabilityStatus,
 };
 
 export default tutorService;
