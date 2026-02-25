@@ -79,7 +79,7 @@ const getTutorAvailability = async () => {
 
 const getAllTutors = async () => {
   try {
-    const res = await fetch(`${API_URL}/tutor/profile/all-tutors`);
+    const res = await fetch(`${API_URL}/tutors`);
     const data = await res.json();
     return data;
   } catch (error) {
@@ -94,7 +94,7 @@ const getAllTutors = async () => {
 
 const getTutorWithId = async (id: string) => {
   try {
-    const res = await fetch(`${API_URL}/tutor/profile/${id}`);
+    const res = await fetch(`${API_URL}/tutors/${id}`);
     const data = await res.json();
     return data;
   } catch (error) {

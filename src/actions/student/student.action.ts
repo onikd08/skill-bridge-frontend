@@ -4,11 +4,11 @@ import studentService from "@/services/student/student.service";
 import { updateTag } from "next/cache";
 
 export const bookSlot = async (payload: {
-  tutorProfileId: string;
-  startTime: string;
-  endTime: string;
+  studentId: string;
+  availabilityId: string;
 }) => {
   const data = await studentService.bookSlot(payload);
+  updateTag("bookings");
   return data;
 };
 

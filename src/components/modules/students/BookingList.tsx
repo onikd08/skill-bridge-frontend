@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +28,11 @@ type Booking = {
   startTime: string;
   endTime: string;
   status: "CONFIRMED" | "CANCELLED" | "COMPLETED";
-  tutorProfile: {
+  availability: any;
+  tutor: {
     subject: string;
     hourlyRate: string;
+    bio: string | null;
     user: {
       name: string;
       image: string | null;
@@ -60,7 +68,7 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
   return (
     <div className="space-y-4">
       {bookings.map((booking) => {
-        const tutor = booking.tutorProfile.user;
+        const tutor = booking.tutor.user;
 
         return (
           <Card key={booking.id}>
@@ -73,7 +81,7 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
               <div className="flex-1">
                 <CardTitle className="text-base">{tutor.name}</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  {booking.tutorProfile.subject}
+                  {booking.tutor.bio}
                 </p>
               </div>
 
@@ -91,13 +99,17 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
             </CardHeader>
 
             <CardContent className="space-y-2 text-sm">
-              <p>📅 {formatDate(booking.startTime)}</p>
+              <p>📅 {formatDate(booking.availability.startTime)}</p>
               <p>
-                ⏰ {formatTime(booking.startTime)} –{" "}
-                {formatTime(booking.endTime)}
+                ⏰ {formatTime(booking.availability.startTime)} –{" "}
+                {formatTime(booking.availability.endTime)}
               </p>
-              <p>💰 ${booking.tutorProfile.hourlyRate}/hour</p>
-
+              <p>💰 ${booking.tutor.hourlyRate}/hour</p>
+              <p className="font-extrabold">
+                Total Price: {booking.availability.totalPrice}$
+              </p>
+            </CardContent>
+            <CardFooter>
               {booking.status === "CONFIRMED" && (
                 <Button
                   variant="destructive"
@@ -107,7 +119,7 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
                   Cancel booking
                 </Button>
               )}
-            </CardContent>
+            </CardFooter>
           </Card>
         );
       })}

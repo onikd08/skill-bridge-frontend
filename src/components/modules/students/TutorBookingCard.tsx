@@ -21,46 +21,62 @@ import {
 import { toast } from "sonner";
 import { bookSlot } from "@/actions/student/student.action";
 import { formatDate, formatTime } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-// ---------------- Types ----------------
 type Availability = {
   id: string;
-  startAt: string;
-  endAt: string;
-  isActive: boolean;
+  startTime: string;
+  endTime: string;
+  totalPrice: number;
+  isBooked: boolean;
+  tutorId: string;
 };
 
 export default function TutorBookingCard({
   tutorName,
-  tutorProfileId,
   availability,
+  userData,
 }: {
   tutorName: string;
-  tutorProfileId: string;
   availability: Availability[];
+  userData: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    status: string;
+    image: string | null;
+  };
 }) {
   const [selected, setSelected] = useState<Availability | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
+
   const handleBooking = () => {
+    if (!userData) {
+      router.push("/login");
+      toast.error("Please login to book a slot");
+      return;
+    }
     if (!selected) return;
 
     startTransition(async () => {
       try {
-        const { data, error } = await bookSlot({
-          tutorProfileId,
-          startTime: selected.startAt,
-          endTime: selected.endAt,
+        const { success, message } = await bookSlot({
+          studentId: userData.id,
+          availabilityId: selected.id,
         });
-        if (!data) {
-          toast.error(error?.message || "Failed to book slot");
+
+        if (!success) {
+          toast.error(message || "Failed to book slot");
           setSelected(null);
           return;
         }
-        toast.success("Booking confirmed");
+        toast.success(message);
         setSelected(null);
-      } catch (err: any) {
-        toast.error(err.message || "Failed to book slot");
+      } catch (err) {
+        toast.error("Failed to book slot");
       }
     });
   };
@@ -73,20 +89,29 @@ export default function TutorBookingCard({
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {availability.length === 0 && (
+        {availability?.length === 0 && (
           <p className="text-sm text-muted-foreground">No available slots</p>
         )}
 
-        {availability.map((slot) => (
+        {availability?.map((slot) => (
           <button
+            disabled={slot.isBooked}
             key={slot.id}
             onClick={() => setSelected(slot)}
             className="w-full rounded-lg border p-3 text-left transition hover:bg-muted"
           >
             <div className="flex justify-between text-sm">
-              <span className="font-medium">{formatDate(slot.startAt)}</span>
+              <span className="font-medium">{formatDate(slot.startTime)}</span>
+              <span
+                className={
+                  slot.isBooked ? "text-muted-foreground" : "text-green-400"
+                }
+              >
+                {slot.isBooked ? "Already Booked" : "Available"}
+              </span>
+              <span>${slot.totalPrice}</span>
               <span>
-                {formatTime(slot.startAt)} – {formatTime(slot.endAt)}
+                {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
               </span>
             </div>
           </button>
@@ -103,9 +128,9 @@ export default function TutorBookingCard({
               <br />
               <span className="font-medium">
                 {selected &&
-                  `${formatDate(selected.startAt)} • ${formatTime(
-                    selected.startAt,
-                  )} – ${formatTime(selected.endAt)}`}
+                  `${formatDate(selected.startTime)} • ${formatTime(
+                    selected.startTime,
+                  )} – ${formatTime(selected.endTime)}`}
               </span>
             </DialogDescription>
           </DialogHeader>

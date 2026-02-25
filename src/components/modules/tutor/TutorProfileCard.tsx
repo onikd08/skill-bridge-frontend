@@ -5,32 +5,30 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
-export type Tutor = {
-  tutor: {
-    bio: string | null;
-    subject: string;
-    hourlyRate: string;
-    averageRating: string;
-    totalReviews: number;
-    isFeatured: boolean;
-    tutorCategories: {
-      category: {
-        id: string;
-        name: string;
-      };
-    }[];
-    user: {
-      name: string;
-      email: string;
-      image: string | null;
-    };
+interface ITutor {
+  bio: string | null;
+  experience: number;
+  hourlyRate: number;
+  isFeatured: boolean;
+  totalReviews: number;
+  averageRating: number;
+  categories: ICategory[];
+  user: {
+    name: string;
+    image: string | null;
+    email: string;
   };
-};
+}
 
-export default function TutorProfileCard({ tutor }: Tutor) {
+interface ICategory {
+  id: string;
+  categoryName: string;
+}
+
+export default function TutorProfileCard({ tutor }: { tutor: ITutor }) {
   const initials = tutor.user.name
     .split(" ")
-    .map((n) => n[0])
+    .map((n: string) => n[0])
     .join("");
 
   return (
@@ -47,7 +45,7 @@ export default function TutorProfileCard({ tutor }: Tutor) {
             {tutor.isFeatured && <Badge variant="secondary">Featured</Badge>}
           </div>
 
-          <p className="text-sm text-muted-foreground">{tutor.subject}</p>
+          <p className="text-sm text-muted-foreground">{tutor.user.email}</p>
 
           <div className="flex items-center gap-1 mt-1 text-sm">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -76,9 +74,9 @@ export default function TutorProfileCard({ tutor }: Tutor) {
 
         {/* Categories */}
         <div className="flex flex-wrap gap-2">
-          {tutor.tutorCategories.map((tc) => (
-            <Badge key={tc.category.id} variant="outline">
-              {tc.category.name}
+          {tutor.categories.map((tc: ICategory) => (
+            <Badge key={tc.id} variant="outline">
+              {tc.categoryName}
             </Badge>
           ))}
         </div>

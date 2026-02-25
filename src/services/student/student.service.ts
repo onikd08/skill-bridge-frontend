@@ -4,23 +4,23 @@ import { cookies } from "next/headers";
 const API_URL = env.API_URL;
 
 const bookSlot = async (payload: {
-  tutorProfileId: string;
-  startTime: string;
-  endTime: string;
+  studentId: string;
+  availabilityId: string;
 }) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/bookings/${payload.tutorProfileId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+    const res = await fetch(
+      `${API_URL}/bookings/availability/${payload.availabilityId}`,
+      {
+        next: { tags: ["bookings"] },
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token!,
+        },
       },
-      body: JSON.stringify({
-        startTime: payload.startTime,
-        endTime: payload.endTime,
-      }),
-    });
+    );
     const data = await res.json();
 
     if (!res.ok) {
@@ -29,7 +29,7 @@ const bookSlot = async (payload: {
         error: data?.error ?? { message: data?.message ?? res.statusText },
       };
     }
-    return { data, error: null };
+    return data;
   } catch (error) {
     return {
       data: null,
@@ -42,11 +42,12 @@ const bookSlot = async (payload: {
 
 const getMyBookings = async () => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/bookings`, {
+    const res = await fetch(`${API_URL}/bookings/my-bookings`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
       next: { tags: ["bookings"] },
     });
