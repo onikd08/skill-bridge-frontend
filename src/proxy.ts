@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import userService from "./services/user/user.service";
+import { getUser } from "./actions/auth/auth.action";
 
-// This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   let isAuthenticated = false;
   const pathname = request.nextUrl.pathname;
-  const { data } = await userService.getUserSession();
-  const role = data?.user?.role;
+  const userData = await getUser();
+  const role = userData?.role;
 
-  if (data) {
+  if (userData) {
     isAuthenticated = true;
   }
 
@@ -40,9 +39,6 @@ export async function proxy(request: NextRequest) {
 
   return NextResponse.next();
 }
-
-// Alternatively, you can use a default export:
-// export default function proxy(request: NextRequest) { ... }
 
 export const config = {
   matcher: [

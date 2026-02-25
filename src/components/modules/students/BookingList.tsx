@@ -50,6 +50,7 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
         }
         toast.success("Booking cancelled");
         setSelected(null);
+        return;
       } catch (err: any) {
         toast.error(err.message || "Failed to cancel booking");
       }

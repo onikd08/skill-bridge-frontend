@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
 
-const AUTH_URL = env.AUTH_URL;
 const updateUserRole = async (userId: string, role: string) => {
   const cookieStorage = await cookies();
 
@@ -27,35 +26,6 @@ const updateUserRole = async (userId: string, role: string) => {
       error: {
         message: "Role update failed",
       },
-    };
-  }
-};
-
-const getUserSession = async () => {
-  const cookieStorage = await cookies();
-
-  try {
-    const response = await fetch(`${AUTH_URL}/get-session`, {
-      headers: {
-        Cookie: cookieStorage.toString(),
-      },
-      cache: "no-cache",
-    });
-    const session = await response.json();
-    if (!session) {
-      return {
-        data: null,
-        message: "Seesion not found",
-      };
-    }
-    return {
-      data: session,
-      message: "User seesion fetched successfully",
-    };
-  } catch (error) {
-    return {
-      error,
-      message: "Something went wrong!",
     };
   }
 };
@@ -106,7 +76,6 @@ const deleteUser = async (userId: string) => {
 };
 const userService = {
   updateUserRole,
-  getUserSession,
   getAllUsers,
   deleteUser,
 };

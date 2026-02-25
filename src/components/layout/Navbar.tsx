@@ -23,7 +23,7 @@ import {
 import Link from "next/link";
 import { ThemeModeToggle } from "./ThemeModeToggle";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { logoutUser } from "@/actions/auth/auth.action";
 
 interface MenuItem {
   title: string;
@@ -33,8 +33,16 @@ interface MenuItem {
   items?: MenuItem[];
 }
 
+interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
 interface Navbar1Props {
-  user: any;
+  user: IUser | null;
   className?: string;
   logo?: {
     url: string;
@@ -81,14 +89,8 @@ const Navbar = ({
   const router = useRouter();
 
   const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-          router.refresh();
-        },
-      },
-    });
+    await logoutUser();
+    router.push("/login");
   };
   return (
     <section className={cn("py-4", className)}>

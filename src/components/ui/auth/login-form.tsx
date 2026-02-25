@@ -1,5 +1,6 @@
 "use client";
 
+import { loginUser } from "@/actions/auth/auth.action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +17,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
 
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
@@ -37,21 +37,19 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading("Loging in...");
+      const toastId = toast.loading("Logging in...");
       try {
-        const { data, error } = await authClient.signIn.email({
-          email: value.email,
-          password: value.password,
-        });
-        if (error) {
-          toast.error(error.message, { id: toastId });
-          return;
+        const data = await loginUser(value.email, value.password);
+        if (!data.success) {
+          return toast.error(data.message, { id: toastId });
         }
-        toast.success(`Welcome ${data.user.name}!!!`, { id: toastId });
         router.push("/");
         router.refresh();
+        return toast.success(data.message, { id: toastId });
       } catch (error) {
-        toast.error("Something went wrong, Please try again", { id: toastId });
+        return toast.error("Something went wrong, Please try again", {
+          id: toastId,
+        });
       }
     },
     validators: {

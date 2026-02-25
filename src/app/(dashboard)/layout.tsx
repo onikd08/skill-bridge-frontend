@@ -1,20 +1,11 @@
+import { getUser } from "@/actions/auth/auth.action";
 import AppSidebar from "@/components/layout/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Roles } from "@/constants/roles";
-import userService from "@/services/user/user.service";
 
 export default async function DashboardLayout({
   admin,
@@ -25,8 +16,8 @@ export default async function DashboardLayout({
   tutor: React.ReactNode;
   student: React.ReactNode;
 }) {
-  const { data } = await userService.getUserSession();
-  const userInfo = data.user;
+  const userInfo = await getUser();
+
   return (
     <SidebarProvider>
       <AppSidebar user={userInfo} />
