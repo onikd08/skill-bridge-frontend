@@ -1,13 +1,14 @@
-import { getStudentInfo } from "@/actions/student/student.action";
+import { getUser } from "@/actions/auth/auth.action";
+import { getMyInfo } from "@/actions/student/student.action";
 import StudentProfileCard from "@/components/modules/students/StudentProfileCard";
 
 const StudentProfilePage = async () => {
-  const { data } = await getStudentInfo();
+  const userData = await getUser();
 
+  const { data: student } = await getMyInfo(userData.id);
   return (
     <div>
-      StudentProfilePage
-      <StudentProfileCard student={data} />
+      <StudentProfileCard student={student} />
     </div>
   );
 };

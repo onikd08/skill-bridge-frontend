@@ -13,14 +13,14 @@ type Student = {
   id: string;
   name: string;
   email: string;
-  image: string | null;
+  imageUrl: string | null;
   role: string;
   status: string;
 };
 
 export default function StudentProfileCard({ student }: { student: Student }) {
   const [name, setName] = useState(student.name);
-  const [image, setImage] = useState(student.image ?? "");
+  const [image, setImage] = useState(student.imageUrl ?? "");
   const [isPending, startTransition] = useTransition();
 
   const handleSave = () => {
@@ -31,15 +31,16 @@ export default function StudentProfileCard({ student }: { student: Student }) {
 
     startTransition(async () => {
       try {
-        const { data } = await updateStudentInfo({
+        const { data, success, message } = await updateStudentInfo({
           name,
-          image: image || null,
+          imageUrl: image,
         });
-        if (!data) {
-          toast.error("Failed to update profile");
+
+        if (!success) {
+          toast.error(message);
           return;
         }
-        toast.success("Profile updated");
+        toast.success(message);
       } catch {
         toast.error("Failed to update profile");
       }

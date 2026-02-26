@@ -89,15 +89,21 @@ const cancelBooking = async (bookingId: string) => {
   }
 };
 
-const getStudentInfo = async () => {
+const updateStudentInfo = async (payload: {
+  imageUrl?: string | null;
+  name: string;
+}) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/student/profile`, {
+    const res = await fetch(`${API_URL}/users`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
       next: { tags: ["student-profile"] },
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     return data;
@@ -111,20 +117,16 @@ const getStudentInfo = async () => {
   }
 };
 
-const updateStudentInfo = async (payload: {
-  image?: string | null;
-  name?: string;
-}) => {
+const getMyInfo = async (id: string) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/student/profile`, {
-      method: "PUT",
+    const res = await fetch(`${API_URL}/users`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
       next: { tags: ["student-profile"] },
-      body: JSON.stringify(payload),
     });
     const data = await res.json();
     return data;
@@ -141,8 +143,8 @@ const studentService = {
   bookSlot,
   cancelBooking,
   getMyBookings,
-  getStudentInfo,
   updateStudentInfo,
+  getMyInfo,
 };
 
 export default studentService;

@@ -23,16 +23,16 @@ export const cancelBooking = async (bookingId: string) => {
   return data;
 };
 
-export const getStudentInfo = async () => {
-  const data = await studentService.getStudentInfo();
-  return data;
-};
-
 export const updateStudentInfo = async (payload: {
-  image?: string | null;
-  name?: string;
+  imageUrl?: string | null;
+  name: string;
 }) => {
   const data = await studentService.updateStudentInfo(payload);
   updateTag("student-profile");
+  return data;
+};
+
+export const getMyInfo = async (id: string) => {
+  const data = await studentService.getMyInfo(id);
   return data;
 };
