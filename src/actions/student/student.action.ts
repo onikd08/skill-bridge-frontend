@@ -32,8 +32,8 @@ export const updateStudentInfo = async (payload: {
   return data;
 };
 
-export const getMyInfo = async (id: string) => {
-  const data = await studentService.getMyInfo(id);
+export const getMyInfo = async () => {
+  const data = await studentService.getMyInfo();
   return data;
 };
 

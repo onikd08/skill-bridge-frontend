@@ -24,6 +24,7 @@ import Link from "next/link";
 import { ThemeModeToggle } from "./ThemeModeToggle";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/actions/auth/auth.action";
+import Image from "next/image";
 
 interface MenuItem {
   title: string;
@@ -100,10 +101,12 @@ const Navbar = ({
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2">
-              <img
+              <Image
                 src={logo.src}
                 className="max-h-8 dark:invert"
                 alt={logo.alt}
+                width={20}
+                height={20}
               />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
@@ -144,10 +147,12 @@ const Navbar = ({
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2">
-              <img
+              <Image
                 src={logo.src}
                 className="max-h-8 dark:invert"
                 alt={logo.alt}
+                height={20}
+                width={20}
               />
             </Link>
             <Sheet>
@@ -160,10 +165,12 @@ const Navbar = ({
                 <SheetHeader>
                   <SheetTitle>
                     <Link href={logo.url} className="flex items-center gap-2">
-                      <img
+                      <Image
                         src={logo.src}
                         className="max-h-8 dark:invert"
                         alt={logo.alt}
+                        height={20}
+                        width={20}
                       />
                     </Link>
                   </SheetTitle>

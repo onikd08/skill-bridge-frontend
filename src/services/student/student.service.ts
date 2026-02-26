@@ -117,7 +117,7 @@ const updateStudentInfo = async (payload: {
   }
 };
 
-const getMyInfo = async (id: string) => {
+const getMyInfo = async () => {
   const cookieStorage = await cookies();
   const token = cookieStorage.get("token")?.value;
   try {
