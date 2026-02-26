@@ -57,11 +57,13 @@ const createTutorProfile = async (tutor: TutorProfile) => {
 
 const getTutorAvailability = async () => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
+
   try {
-    const res = await fetch(`${API_URL}/tutor/availability`, {
+    const res = await fetch(`${API_URL}/availability`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
       next: { tags: ["tutor-availability"] },
     });
@@ -71,7 +73,7 @@ const getTutorAvailability = async () => {
     return {
       data: null,
       error: {
-        message: "Profile not found",
+        message: "Availabilities not found",
       },
     };
   }
@@ -108,18 +110,19 @@ const getTutorWithId = async (id: string) => {
 };
 
 export type Availability = {
-  startAt: string;
-  endAt: string;
+  startTime: string;
+  endTime: string;
 };
 
 const createTutorAvailability = async (payload: Availability) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/tutor/availability`, {
+    const res = await fetch(`${API_URL}/availability`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
       body: JSON.stringify(payload),
       next: { tags: ["tutor-availability"] },
@@ -130,7 +133,7 @@ const createTutorAvailability = async (payload: Availability) => {
     return {
       data: null,
       error: {
-        message: "Profile not found",
+        message: "Could not create availability",
       },
     };
   }
@@ -169,12 +172,13 @@ const updateTutorProfile = async (payload: TutorProfile) => {
 
 const deleteAvailability = async (id: string) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/tutor/availability/${id}`, {
+    const res = await fetch(`${API_URL}/availability/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
     });
     const data = await res.json();
@@ -183,7 +187,7 @@ const deleteAvailability = async (id: string) => {
     return {
       data: null,
       error: {
-        message: "Profile not found",
+        message: "Failed to delete availability",
       },
     };
   }

@@ -20,9 +20,10 @@ import {
 
 type Availability = {
   id: string;
-  startAt: string;
-  endAt: string;
-  isActive: boolean;
+  startTime: string;
+  endTime: string;
+  totalPrice: number;
+  isBooked: boolean;
 };
 
 function toISO(date: string, time: string) {
@@ -53,12 +54,16 @@ export default function TutorAvailabilityForm({
     }
 
     try {
-      await createTutorAvailability({
-        startAt,
-        endAt,
+      const { success, message } = await createTutorAvailability({
+        startTime: startAt,
+        endTime: endAt,
       });
+      if (!success) {
+        toast.error(message);
+        return;
+      }
+      toast.success(message);
 
-      toast.success("Availability added");
       setDate("");
       setStartTime("");
       setEndTime("");
@@ -114,50 +119,39 @@ export default function TutorAvailabilityForm({
               >
                 <div>
                   <div>
-                    {new Date(slot.startAt).toLocaleString()} –{" "}
-                    {new Date(slot.endAt).toLocaleTimeString()}
+                    {new Date(slot.startTime).toLocaleString()} –{" "}
+                    {new Date(slot.endTime).toLocaleTimeString()}
                   </div>
 
                   <span
                     className={
-                      slot.isActive ? "text-green-600" : "text-muted-foreground"
+                      slot.isBooked ? "text-green-600" : "text-muted-foreground"
                     }
                   >
-                    {slot.isActive ? "Active" : "Inactive"}
+                    {slot.isBooked ? "Booked" : "Available"}
                   </span>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={async () => {
-                      try {
-                        await updateAvailabilityStatus(slot.id);
-                        toast.success("Availability updated");
-                      } catch {
-                        toast.error("Failed to update availability");
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={async () => {
+                    try {
+                      const { success, message } = await deleteAvailability(
+                        slot.id,
+                      );
+                      if (!success) {
+                        toast.error(message);
+                        return;
                       }
-                    }}
-                  >
-                    {slot.isActive ? "Deactivate" : "Activate"}
-                  </Button>
-
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={async () => {
-                      try {
-                        await deleteAvailability(slot.id);
-                        toast.success("Availability deleted");
-                      } catch {
-                        toast.error("Failed to delete availability");
-                      }
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
+                      toast.success(message);
+                    } catch {
+                      toast.error("Failed to delete availability");
+                    }
+                  }}
+                >
+                  Delete
+                </Button>
               </div>
             ))}
           </div>

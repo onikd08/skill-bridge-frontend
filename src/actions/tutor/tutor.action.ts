@@ -22,8 +22,8 @@ export const updateTutorProfile = async (payload: TutorProfile) => {
   return data;
 };
 
-export const deleteAvailability = async (id: string) => {
-  const data = await tutorService.deleteAvailability(id);
+export const deleteAvailability = async (availabilityId: string) => {
+  const data = await tutorService.deleteAvailability(availabilityId);
   updateTag("tutor-availability");
   return data;
 };

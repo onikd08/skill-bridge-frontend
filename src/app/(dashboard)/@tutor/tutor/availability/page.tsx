@@ -2,13 +2,16 @@ import TutorAvailabilityForm from "@/components/modules/tutor/TutorAvailabilityF
 import tutorService from "@/services/tutor/tutor.service";
 
 const TutorAvailabilityPage = async () => {
-  const { data: availability } = await tutorService.getTutorAvailability();
+  const { success, data: availability } =
+    await tutorService.getTutorAvailability();
+
   return (
     <div>
-      TutorAvailabilityPage
-      <TutorAvailabilityForm
-        availability={availability}
-      ></TutorAvailabilityForm>
+      {success && (
+        <TutorAvailabilityForm
+          availability={availability}
+        ></TutorAvailabilityForm>
+      )}
     </div>
   );
 };
