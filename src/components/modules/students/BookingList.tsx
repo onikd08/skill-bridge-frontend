@@ -49,14 +49,14 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
 
     startTransition(async () => {
       try {
-        const data = await cancelBooking(selected.id);
-        console.log(selected.id);
-        if (!data) {
-          toast.error("Failed to cancel booking");
+        const { success, message } = await cancelBooking(selected.id);
+
+        if (!success) {
+          toast.error(message || "Failed to cancel booking");
           setSelected(null);
           return;
         }
-        toast.success("Booking cancelled");
+        toast.success(message);
         setSelected(null);
         return;
       } catch (err: any) {

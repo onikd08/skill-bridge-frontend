@@ -5,7 +5,7 @@ const StudentBookingsPage = async () => {
   const { data } = await getMyBookings();
   return (
     <div>
-      StudentBookingsPage
+      <h1 className="mb-5">My Bookings</h1>
       <BookingsList bookings={data} />
     </div>
   );

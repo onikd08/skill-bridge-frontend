@@ -23,12 +23,6 @@ const bookSlot = async (payload: {
     );
     const data = await res.json();
 
-    if (!res.ok) {
-      return {
-        data: null,
-        error: data?.error ?? { message: data?.message ?? res.statusText },
-      };
-    }
     return data;
   } catch (error) {
     return {
@@ -65,14 +59,15 @@ const getMyBookings = async () => {
 
 const cancelBooking = async (bookingId: string) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/bookings`, {
+    const res = await fetch(`${API_URL}/bookings/${bookingId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
-      body: JSON.stringify({ bookingId }),
+      next: { tags: ["bookings"] },
     });
     if (!res.ok) {
       return {
@@ -83,10 +78,7 @@ const cancelBooking = async (bookingId: string) => {
       };
     }
     const data = await res.json();
-    return {
-      data,
-      error: null,
-    };
+    return data;
   } catch (error) {
     return {
       data: null,
