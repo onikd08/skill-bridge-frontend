@@ -1,5 +1,4 @@
-import { IUpdateProfile } from "@/actions/tutor/tutor.action";
-import { TutorProfile } from "@/components/modules/tutor/TutorProfileForm";
+import { IProfile } from "@/actions/tutor/tutor.action";
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
@@ -48,32 +47,27 @@ const getTutorProfileByUserId = async () => {
   }
 };
 
-const createTutorProfile = async (tutor: TutorProfile) => {
+const createTutorProfile = async (tutor: IProfile) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/tutor/profile`, {
+    const res = await fetch(`${API_URL}/tutors`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
 
       body: JSON.stringify(tutor),
       next: { tags: ["tutor-profile"] },
     });
     const data = await res.json();
-    if (!res.ok) {
-      return {
-        data: null,
-        error: data?.error ?? { message: data?.message ?? res.statusText },
-      };
-    }
-    return { data, error: null };
+    return data;
   } catch (error) {
     return {
       data: null,
       error: {
-        message: "Profile not found",
+        message: "Something went wrong",
       },
     };
   }
@@ -163,7 +157,7 @@ const createTutorAvailability = async (payload: Availability) => {
   }
 };
 
-const updateTutorProfile = async (payload: IUpdateProfile) => {
+const updateTutorProfile = async (payload: IProfile) => {
   const cookieStorage = await cookies();
   const token = cookieStorage.get("token")?.value;
   try {

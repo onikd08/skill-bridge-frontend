@@ -23,13 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
 
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 
 import * as z from "zod";
 import { useRouter } from "next/navigation";
+import { registerUser } from "@/actions/auth/auth.action";
 
 const formSchema = z
   .object({
@@ -62,23 +62,21 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Creating User...");
       try {
-        const { data, error } = await authClient.signUp.email({
+        const { success, message } = await registerUser({
           name: value.name,
           email: value.email,
           password: value.password,
           role: value.role,
         });
-        if (error) {
-          toast.error(error.message, { id: toastId });
+        if (!success) {
+          toast.error(message, { id: toastId });
           return;
         }
 
-        toast.success("User created successfully!!!", { id: toastId });
+        toast.success(message, { id: toastId });
         router.push("/login");
-        router.refresh();
-        setTimeout(() => {
-          toast.info("Please verify your email before login", { id: toastId });
-        }, 2000);
+
+        return;
       } catch (error) {
         toast.error("Something went wrong, Please try again", { id: toastId });
       }

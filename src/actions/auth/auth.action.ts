@@ -5,8 +5,10 @@ import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
 
 export const loginUser = async (email: string, password: string) => {
-  const data = await authService.login(email, password);
-  return data;
+  const result = await authService.login(email, password);
+  const cookieStorage = await cookies();
+  cookieStorage.set("token", result?.data?.token);
+  return result;
 };
 
 export const getUser = async () => {
@@ -22,4 +24,9 @@ export const getUser = async () => {
 export const logoutUser = async () => {
   const storeCookie = await cookies();
   storeCookie.delete("token");
+};
+
+export const registerUser = async (payload: any) => {
+  const result = await authService.registerUser(payload);
+  return result;
 };

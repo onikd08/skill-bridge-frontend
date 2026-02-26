@@ -80,10 +80,9 @@ export function TutorProfileForm({ mode, categories, tutorProfile }: Props) {
         };
 
         if (isUpdate) {
-          console.log("update");
           await updateTutorProfile(payload);
         } else {
-          //await createTutorProfile(payload);
+          await createTutorProfile(payload);
         }
 
         toast.success(
