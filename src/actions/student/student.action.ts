@@ -36,3 +36,12 @@ export const getMyInfo = async (id: string) => {
   const data = await studentService.getMyInfo(id);
   return data;
 };
+
+export const createReview = async (payload: {
+  rating: number;
+  comment?: string;
+  bookingId: string;
+}) => {
+  const data = await studentService.createReview(payload);
+  return data;
+};

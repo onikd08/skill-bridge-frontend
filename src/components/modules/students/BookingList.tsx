@@ -22,13 +22,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { cancelBooking } from "@/actions/student/student.action";
 import { formatDate, formatTime } from "@/lib/utils";
+import ReviewSection from "./ReviewSection";
 
-type Booking = {
+export type Booking = {
   id: string;
   startTime: string;
   endTime: string;
   status: "CONFIRMED" | "CANCELLED" | "COMPLETED";
   availability: any;
+  review: any;
   tutor: {
     subject: string;
     hourlyRate: string;
@@ -43,7 +45,6 @@ type Booking = {
 export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
   const [selected, setSelected] = useState<Booking | null>(null);
   const [isPending, startTransition] = useTransition();
-
   const handleCancel = () => {
     if (!selected) return;
 
@@ -118,6 +119,9 @@ export default function MyBookingsList({ bookings }: { bookings: Booking[] }) {
                 >
                   Cancel booking
                 </Button>
+              )}
+              {booking.status === "COMPLETED" && (
+                <ReviewSection booking={booking}></ReviewSection>
               )}
             </CardFooter>
           </Card>

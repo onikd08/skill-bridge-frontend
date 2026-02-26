@@ -139,12 +139,46 @@ const getMyInfo = async (id: string) => {
     };
   }
 };
+
+const createReview = async (payload: {
+  rating: number;
+  comment?: string;
+  bookingId: string;
+}) => {
+  const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
+  console.log("review is creating", payload);
+  try {
+    const res = await fetch(`${API_URL}/bookings/${payload.bookingId}/review`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token!,
+      },
+
+      body: JSON.stringify({
+        rating: payload.rating,
+        comment: payload.comment,
+      }),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return {
+      data: null,
+      error: {
+        message: error.message || "Failed to create review",
+      },
+    };
+  }
+};
 const studentService = {
   bookSlot,
   cancelBooking,
   getMyBookings,
   updateStudentInfo,
   getMyInfo,
+  createReview,
 };
 
 export default studentService;
