@@ -20,57 +20,50 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useForm } from "@tanstack/react-form";
-import { User } from "better-auth";
-import { use } from "react";
+import { Star } from "lucide-react";
 import { toast } from "sonner";
 import * as z from "zod";
 
 export const tutorProfileSchema = z.object({
-  bio: z.string().max(500).optional(),
-  subject: z.string().min(3, "Subject is required"),
+  bio: z.string().max(500),
+  experience: z.number().min(0, "Experience must be 0 or more"),
   hourlyRate: z.number().min(1, "Hourly rate must be greater than 0"),
-  isFeatured: z.boolean(),
-  categoryIds: z.array(z.string()).min(1, "Select at least one category"),
+  categories: z.array(z.string()).min(1, "Select at least one category"),
 });
+
 type Category = {
   id: string;
-  name: string;
+  categoryName: string;
 };
 
 export type TutorProfile = {
   bio?: string | null;
-  subject: string;
+  experience: number;
   hourlyRate: number;
   isFeatured: boolean;
-  tutorCategories: { categoryId: string }[];
+  categories: Category[];
+  totalReviews: number;
+  averageRating: number;
 };
 
 type Props = {
   mode: "create" | "update";
   categories: Category[];
   tutorProfile?: TutorProfile;
-  user: User;
+  user: any;
 };
 
-export function TutorProfileForm({
-  mode,
-  categories,
-  tutorProfile,
-  user,
-}: Props) {
+export function TutorProfileForm({ mode, categories, tutorProfile }: Props) {
   const isUpdate = mode === "update";
 
   const form = useForm({
     defaultValues: {
-      name: user.name,
-      email: user.email,
       bio: tutorProfile?.bio ?? "",
-      subject: tutorProfile?.subject ?? "",
+      experience: tutorProfile?.experience ?? 0,
       hourlyRate: tutorProfile?.hourlyRate ?? 0,
-      isFeatured: tutorProfile?.isFeatured ?? false,
-      categoryIds:
-        tutorProfile?.tutorCategories?.map((c) => c.categoryId) ?? [],
+      categories: tutorProfile?.categories?.map((c) => c.id) ?? [],
     },
     validators: {
       onSubmit: tutorProfileSchema,
@@ -81,22 +74,16 @@ export function TutorProfileForm({
       );
 
       try {
+        const payload = {
+          ...value,
+          categories: value.categories.map((id) => id),
+        };
+
         if (isUpdate) {
-          const payload = {
-            ...value,
-            tutorCategories: value.categoryIds.map((id) => ({
-              categoryId: id,
-            })),
-          };
+          console.log("update");
           await updateTutorProfile(payload);
         } else {
-          const payload = {
-            ...value,
-            tutorCategories: value.categoryIds.map((id) => ({
-              categoryId: id,
-            })),
-          };
-          await createTutorProfile(payload);
+          //await createTutorProfile(payload);
         }
 
         toast.success(
@@ -112,9 +99,9 @@ export function TutorProfileForm({
   });
 
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>
+    <Card className="max-w-2xl mx-auto shadow-xl border-0 rounded-2xl">
+      <CardHeader className="space-y-3">
+        <CardTitle className="text-2xl font-bold">
           {isUpdate ? "Edit Tutor Profile" : "Create Tutor Profile"}
         </CardTitle>
         <CardDescription>
@@ -122,6 +109,20 @@ export function TutorProfileForm({
             ? "Update your tutor information"
             : "Set up your tutor profile"}
         </CardDescription>
+
+        {/* ⭐ Rating Summary (Update Mode Only) */}
+        {isUpdate && tutorProfile && (
+          <div className="flex items-center gap-3 pt-2">
+            <Badge className="px-3 py-1 text-sm flex items-center gap-1 bg-yellow-100 text-yellow-700 border-yellow-300">
+              <Star size={16} className="fill-yellow-500 text-yellow-500" />
+              {tutorProfile.averageRating.toFixed(1)}
+            </Badge>
+
+            <span className="text-sm text-muted-foreground">
+              {tutorProfile.totalReviews} Reviews
+            </span>
+          </div>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -132,68 +133,43 @@ export function TutorProfileForm({
             form.handleSubmit();
           }}
         >
-          <FieldGroup>
-            <form.Field name="name">
-              {(field) => {
-                const invalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={invalid}>
-                    <FieldLabel>Name</FieldLabel>
-                    <Input value={field.state.value} readOnly />
-                    {invalid && <FieldError errors={field.state.meta.errors} />}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <form.Field name="email">
-              {(field) => {
-                const invalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={invalid}>
-                    <FieldLabel>Email</FieldLabel>
-                    <Input value={field.state.value} readOnly />
-                    {invalid && <FieldError errors={field.state.meta.errors} />}
-                  </Field>
-                );
-              }}
-            </form.Field>
-            {/* Subject */}
-            <form.Field name="subject">
-              {(field) => {
-                const invalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={invalid}>
-                    <FieldLabel>Subject</FieldLabel>
-                    <Input
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    {invalid && <FieldError errors={field.state.meta.errors} />}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
+          <FieldGroup className="space-y-6">
             {/* Bio */}
             <form.Field name="bio">
               {(field) => (
                 <Field>
                   <FieldLabel>Bio</FieldLabel>
                   <textarea
-                    className="w-full rounded-md border p-2 text-sm"
+                    className="w-full rounded-lg border p-3 text-sm focus:ring-2 focus:ring-primary outline-none"
                     rows={4}
+                    placeholder="Tell students about yourself..."
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                 </Field>
               )}
+            </form.Field>
+
+            {/* Experience */}
+            <form.Field name="experience">
+              {(field) => {
+                const invalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={invalid}>
+                    <FieldLabel>Experience (Years)</FieldLabel>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                    />
+                    {invalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
             </form.Field>
 
             {/* Hourly Rate */}
@@ -218,24 +194,8 @@ export function TutorProfileForm({
               }}
             </form.Field>
 
-            {/* Featured */}
-            <form.Field name="isFeatured">
-              {(field) => (
-                <Field>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.checked)}
-                    />
-                    Featured Tutor
-                  </label>
-                </Field>
-              )}
-            </form.Field>
-
             {/* Categories */}
-            <form.Field name="categoryIds">
+            <form.Field name="categories">
               {(field) => {
                 const invalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -244,11 +204,11 @@ export function TutorProfileForm({
                   <Field data-invalid={invalid}>
                     <FieldLabel>Categories</FieldLabel>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-3 mt-2">
                       {categories.map((category) => (
                         <label
                           key={category.id}
-                          className="flex items-center gap-2 text-sm"
+                          className="flex items-center gap-2 text-sm p-2 rounded-md border hover:bg-muted transition"
                         >
                           <input
                             type="checkbox"
@@ -259,11 +219,10 @@ export function TutorProfileForm({
                                 : field.state.value.filter(
                                     (id) => id !== category.id,
                                   );
-
                               field.handleChange(next);
                             }}
                           />
-                          {category.name}
+                          {category.categoryName}
                         </label>
                       ))}
                     </div>
@@ -278,7 +237,11 @@ export function TutorProfileForm({
       </CardContent>
 
       <CardFooter>
-        <Button className="w-full" form="tutor-profile-form" type="submit">
+        <Button
+          className="w-full rounded-xl text-base py-5"
+          form="tutor-profile-form"
+          type="submit"
+        >
           {isUpdate ? "Save Changes" : "Create Profile"}
         </Button>
       </CardFooter>

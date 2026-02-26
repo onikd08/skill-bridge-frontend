@@ -147,7 +147,6 @@ const createReview = async (payload: {
 }) => {
   const cookieStorage = await cookies();
   const token = cookieStorage.get("token")?.value;
-  console.log("review is creating", payload);
   try {
     const res = await fetch(`${API_URL}/bookings/${payload.bookingId}/review`, {
       method: "POST",

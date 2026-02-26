@@ -1,15 +1,39 @@
+import { IUpdateProfile } from "@/actions/tutor/tutor.action";
 import { TutorProfile } from "@/components/modules/tutor/TutorProfileForm";
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
-const getTutorProfile = async () => {
+const getTutorProfile = async (tutorId: string) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/tutor/profile`, {
+    const res = await fetch(`${API_URL}/tutors/${tutorId}`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
+const getTutorProfileByUserId = async () => {
+  const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
+  try {
+    const res = await fetch(`${API_URL}/tutors/profile`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token!,
       },
     });
     const data = await res.json();
@@ -139,32 +163,25 @@ const createTutorAvailability = async (payload: Availability) => {
   }
 };
 
-const updateTutorProfile = async (payload: TutorProfile) => {
+const updateTutorProfile = async (payload: IUpdateProfile) => {
   const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/tutor/profile`, {
+    const res = await fetch(`${API_URL}/tutors`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStorage.toString(),
+        Authorization: token!,
       },
       body: JSON.stringify(payload),
     });
     const data = await res.json();
-    console.log(data);
-    if (!res.ok) {
-      console.log("not okay");
-      return {
-        data: null,
-        error: data?.error ?? { message: data?.message ?? res.statusText },
-      };
-    }
-    return { data, error: null };
+    return data;
   } catch (error) {
     return {
       data: null,
       error: {
-        message: "Profile not found",
+        message: "Something went wrong",
       },
     };
   }
@@ -225,6 +242,7 @@ const tutorService = {
   updateTutorProfile,
   deleteAvailability,
   updateAvailabilityStatus,
+  getTutorProfileByUserId,
 };
 
 export default tutorService;

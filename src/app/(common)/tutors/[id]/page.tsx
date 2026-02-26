@@ -10,16 +10,20 @@ const TutorProfilePage = async ({
 }) => {
   const { id } = await params;
   const { data: tutor } = await tutorService.getTutorWithId(id);
-  const availability = tutor.availability;
+  const availability = tutor?.availability;
   const userData = await getUser();
   return (
     <div>
-      <TutorProfileCard tutor={tutor} />
-      <TutorBookingCard
-        tutorName={tutor.user.name}
-        availability={availability}
-        userData={userData}
-      />
+      {availability && tutor && (
+        <>
+          <TutorProfileCard tutor={tutor} />
+          <TutorBookingCard
+            tutorName={tutor.user.name}
+            availability={availability}
+            userData={userData}
+          />
+        </>
+      )}
     </div>
   );
 };
