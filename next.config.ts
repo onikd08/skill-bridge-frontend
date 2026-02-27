@@ -9,6 +9,14 @@ const config: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/auth/:path*",
+        destination: `${process.env.API_URL}/auth/:path*`,
+      },
+    ];
+  },
 };
 
 export default config;
