@@ -137,31 +137,48 @@ export default function TutorDashboard({ tutor }: TutorDashboardProps) {
       </Card>
 
       {/* ================= AVAILABILITY ================= */}
-      <Card className="shadow-md rounded-xl">
+      <Card className="shadow-md rounded-xl border dark:border-gray-800 bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle>Availability</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-gray-100">
+            Availability
+          </CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-3">
           {tutor.availability.map((slot: any) => (
             <div
               key={slot.id}
-              className={`flex justify-between items-center p-3 rounded-lg border ${
-                slot.isBooked
-                  ? "bg-red-50 border-red-200"
-                  : "bg-green-50 border-green-200"
-              }`}
+              className={`flex justify-between items-center p-3 rounded-lg border transition-colors
+        ${
+          slot.isBooked
+            ? `
+              bg-red-50 border-red-200
+              dark:bg-red-500/10 dark:border-red-500/30
+            `
+            : `
+              bg-green-50 border-green-200
+              dark:bg-green-500/10 dark:border-green-500/30
+            `
+        }`}
             >
               <div>
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                   {format(new Date(slot.startTime), "PPP p")} -{" "}
                   {format(new Date(slot.endTime), "p")}
                 </p>
-                <p className="text-xs text-muted-foreground">
+
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   ${slot.totalPrice}
                 </p>
               </div>
 
-              <Badge className={slot.isBooked ? "bg-red-500" : "bg-green-500"}>
+              <Badge
+                className={`text-white ${
+                  slot.isBooked
+                    ? "bg-red-500 dark:bg-red-600"
+                    : "bg-green-500 dark:bg-green-600"
+                }`}
+              >
                 {slot.isBooked ? "Booked" : "Available"}
               </Badge>
             </div>
