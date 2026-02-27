@@ -1,7 +1,6 @@
 "use client";
 
-import { deleteUser } from "@/actions/user/user.action";
-import { updateIsFeatured } from "@/actions/user/user.action";
+import { updateIsFeatured, updateUserStatus } from "@/actions/user/user.action";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,43 +15,54 @@ import { formatDate } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
-interface User {
+export interface IUser {
   id: string;
   name: string;
+  status: "ACTIVE" | "BANNED";
   email: string;
   createdAt: string;
   updatedAt: string;
-  role: string;
+  role: "STUDENT" | "TUTOR";
   tutorProfile: {
     isFeatured: boolean;
   } | null;
 }
 
-const UserManagement = ({ users }: { users: User[] }) => {
+const UserManagement = ({ users }: { users: IUser[] }) => {
   const [selectedRole, setSelectedRole] = useState("ALL");
   const [localUsers, setLocalUsers] = useState(users);
 
-  /* ================= DELETE ================= */
-  const handleDeleteUser = async (id: string) => {
-    const toastId = toast.loading("Deleting user...");
-    const { error } = await deleteUser(id);
+  /* ================= Update Status ================= */
+  const handleUpdateStatus = async (id: string) => {
+    const toastId = toast.loading("Updating User Status...");
 
-    if (error) {
-      toast.error(error.message, { id: toastId });
+    const { success, message } = await updateUserStatus(id);
+
+    if (!success) {
+      toast.error(message, { id: toastId });
       return;
     }
 
-    setLocalUsers((prev) => prev.filter((u) => u.id !== id));
-    toast.success("User deleted successfully", { id: toastId });
+    // 🔥 UPDATE UI IMMEDIATELY
+    setLocalUsers((prev) =>
+      prev.map((user) =>
+        user.id === id
+          ? {
+              ...user,
+              status: user.status === "ACTIVE" ? "BANNED" : "ACTIVE",
+            }
+          : user,
+      ),
+    );
+
+    toast.success(message, { id: toastId });
   };
 
   /* ================= TOGGLE FEATURED ================= */
-  const handleToggleFeatured = async (user: User) => {
+  const handleToggleFeatured = async (user: IUser) => {
     if (!user.tutorProfile) return;
 
     const toastId = toast.loading("Updating...");
-
-    const newValue = !user.tutorProfile.isFeatured;
 
     const { success, message } = await updateIsFeatured(user.id);
 
@@ -68,16 +78,15 @@ const UserManagement = ({ users }: { users: User[] }) => {
               ...u,
               tutorProfile: {
                 ...u.tutorProfile!,
-                isFeatured: newValue,
+                isFeatured: !u.tutorProfile!.isFeatured,
               },
             }
           : u,
       ),
     );
 
-    toast.success("Updated successfully", { id: toastId });
+    toast.success(message, { id: toastId });
   };
-
   /* ================= ROLE FILTER ================= */
   const filteredUsers = useMemo(() => {
     if (selectedRole === "ALL") return localUsers;
@@ -98,7 +107,6 @@ const UserManagement = ({ users }: { users: User[] }) => {
           border-gray-200 dark:border-gray-700"
         >
           <option value="ALL">All Roles</option>
-          <option value="ADMIN">Admin</option>
           <option value="STUDENT">Student</option>
           <option value="TUTOR">Tutor</option>
         </select>
@@ -170,14 +178,14 @@ const UserManagement = ({ users }: { users: User[] }) => {
                 <TableCell>{formatDate(user.createdAt)}</TableCell>
                 <TableCell>{formatDate(user.updatedAt)}</TableCell>
 
-                {/* Delete */}
+                {/* Action */}
                 <TableCell>
                   <Button
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => handleUpdateStatus(user.id)}
                     variant="destructive"
                     size="sm"
                   >
-                    Delete
+                    {user.status === "ACTIVE" ? "Ban" : "Unban"}
                   </Button>
                 </TableCell>
               </TableRow>
