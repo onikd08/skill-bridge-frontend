@@ -17,3 +17,8 @@ export const deleteUser = async (userId: string) => {
   updateTag("users");
   return data;
 };
+
+export const updateIsFeatured = async (userId: string) => {
+  const data = await userService.updateIsFeatured(userId);
+  return data;
+};

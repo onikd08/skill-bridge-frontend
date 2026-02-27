@@ -1,6 +1,9 @@
 "use client";
+
 import { deleteUser } from "@/actions/user/user.action";
+import { updateIsFeatured } from "@/actions/user/user.action";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -10,20 +13,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate } from "@/lib/utils";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
 interface User {
   id: string;
   name: string;
   email: string;
-  emailVerified: boolean;
-  image: string;
   createdAt: string;
   updatedAt: string;
   role: string;
+  tutorProfile: {
+    isFeatured: boolean;
+  } | null;
 }
 
 const UserManagement = ({ users }: { users: User[] }) => {
+  const [selectedRole, setSelectedRole] = useState("ALL");
+  const [localUsers, setLocalUsers] = useState(users);
+
+  /* ================= DELETE ================= */
   const handleDeleteUser = async (id: string) => {
     const toastId = toast.loading("Deleting user...");
     const { error } = await deleteUser(id);
@@ -33,68 +42,143 @@ const UserManagement = ({ users }: { users: User[] }) => {
       return;
     }
 
+    setLocalUsers((prev) => prev.filter((u) => u.id !== id));
     toast.success("User deleted successfully", { id: toastId });
   };
+
+  /* ================= TOGGLE FEATURED ================= */
+  const handleToggleFeatured = async (user: User) => {
+    if (!user.tutorProfile) return;
+
+    const toastId = toast.loading("Updating...");
+
+    const newValue = !user.tutorProfile.isFeatured;
+
+    const { success, message } = await updateIsFeatured(user.id);
+
+    if (!success) {
+      toast.error(message, { id: toastId });
+      return;
+    }
+
+    setLocalUsers((prev) =>
+      prev.map((u) =>
+        u.id === user.id
+          ? {
+              ...u,
+              tutorProfile: {
+                ...u.tutorProfile!,
+                isFeatured: newValue,
+              },
+            }
+          : u,
+      ),
+    );
+
+    toast.success("Updated successfully", { id: toastId });
+  };
+
+  /* ================= ROLE FILTER ================= */
+  const filteredUsers = useMemo(() => {
+    if (selectedRole === "ALL") return localUsers;
+    return localUsers.filter((u) => u.role === selectedRole);
+  }, [selectedRole, localUsers]);
+
   return (
-    <div>
-      <Table className="border">
-        <TableHeader>
+    <div className="space-y-6">
+      {/* 🔽 Filter Header */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">User Management</h2>
+
+        <select
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+          className="px-3 py-2 rounded-lg border 
+          bg-white dark:bg-gray-900 
+          border-gray-200 dark:border-gray-700"
+        >
+          <option value="ALL">All Roles</option>
+          <option value="ADMIN">Admin</option>
+          <option value="STUDENT">Student</option>
+          <option value="TUTOR">Tutor</option>
+        </select>
+      </div>
+
+      {/* 📋 Table */}
+      <Table className="border rounded-lg overflow-hidden">
+        <TableHeader className="bg-muted/50">
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead className="text-left">Role</TableHead>
-            <TableHead className="text-left">Email Verified</TableHead>
-            <TableHead className="text-left">Image URL</TableHead>
-            <TableHead className="text-left">Created At</TableHead>
-            <TableHead className="text-left">Update At</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead>Featured</TableHead>
+            <TableHead>Created</TableHead>
+            <TableHead>Updated</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          {users.length === 0 ? (
-            <TableRow className="w-full">
+          {filteredUsers.length === 0 ? (
+            <TableRow>
               <TableCell
-                colSpan={7}
+                colSpan={6}
                 className="text-center py-8 text-muted-foreground"
               >
-                No user found
+                No users found
               </TableCell>
             </TableRow>
           ) : (
-            users.map((user) => (
-              <TableRow key={user.id}>
+            filteredUsers.map((user) => (
+              <TableRow key={user.id} className="hover:bg-muted/40 transition">
+                {/* Name */}
                 <TableCell>
-                  <div className="max-w-100">
+                  <div>
                     <p className="font-medium">{user.name}</p>
-                    <p className="text-sm text-muted-foreground line-clamp-1">
+                    <p className="text-sm text-muted-foreground">
                       {user.email}
                     </p>
                   </div>
                 </TableCell>
 
-                <TableCell className="text-left">{user.role}</TableCell>
-                <TableCell className="text-left">
-                  {user.emailVerified ? "Verified" : "Not Verified"}
-                </TableCell>
-                <TableCell className="text-left">
-                  {user.image ?? "Not given"}
-                </TableCell>
-                <TableCell className="text-left">
-                  {formatDate(user.createdAt)}
-                </TableCell>
-                <TableCell className="text-left">
-                  {formatDate(user.updatedAt)}
-                </TableCell>
+                {/* Role */}
                 <TableCell>
-                  {
+                  <Badge variant="outline" className="font-medium">
+                    {user.role}
+                  </Badge>
+                </TableCell>
+
+                {/* Featured */}
+                <TableCell>
+                  {user.role === "TUTOR" && user.tutorProfile ? (
                     <Button
-                      onClick={() => handleDeleteUser(user.id)}
-                      type="button"
-                      variant="destructive"
                       size="sm"
+                      variant={
+                        user.tutorProfile.isFeatured ? "default" : "outline"
+                      }
+                      onClick={() => handleToggleFeatured(user)}
                     >
-                      X
+                      {user.tutorProfile.isFeatured
+                        ? "⭐ Featured"
+                        : "Mark Featured"}
                     </Button>
-                  }
+                  ) : (
+                    <span className="text-muted-foreground text-sm">N/A</span>
+                  )}
+                </TableCell>
+
+                {/* Dates */}
+                <TableCell>{formatDate(user.createdAt)}</TableCell>
+                <TableCell>{formatDate(user.updatedAt)}</TableCell>
+
+                {/* Delete */}
+                <TableCell>
+                  <Button
+                    onClick={() => handleDeleteUser(user.id)}
+                    variant="destructive"
+                    size="sm"
+                  >
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))

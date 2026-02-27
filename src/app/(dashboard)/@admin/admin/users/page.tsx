@@ -3,6 +3,7 @@ import UserManagement from "@/components/modules/user/UserManagement";
 
 const UsersPage = async () => {
   const { data } = (await getAllUsers()) || [];
+  console.log(data);
   return (
     <div>
       <h1 className="mb-5">Manage Users</h1>
