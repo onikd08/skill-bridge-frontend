@@ -12,6 +12,14 @@ export async function proxy(request: NextRequest) {
     isAuthenticated = true;
   }
 
+  // If user is logged in and tries to access login or register
+  if (
+    isAuthenticated &&
+    (pathname.startsWith("/login") || pathname.startsWith("/register"))
+  ) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (!isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -48,5 +56,7 @@ export const config = {
     "/admin/:path*",
     "/tutor",
     "/tutor/:path*",
+    "/login",
+    "/register",
   ],
 };
