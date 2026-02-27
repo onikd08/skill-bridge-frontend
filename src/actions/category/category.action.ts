@@ -22,8 +22,8 @@ export const createCategory = async (categoryName: string) => {
   return data;
 };
 
-export const updateCategory = async (id: string, name: string) => {
-  const data = await categoryService.updateCategory(id, name);
+export const updateCategory = async (id: string, categoryName: string) => {
+  const data = await categoryService.updateCategory(id, categoryName);
 
   updateTag("categories");
   return data;

@@ -23,7 +23,7 @@ import {
 
 type Category = {
   id: string;
-  name: string;
+  categoryName: string;
 };
 
 export default function CategoryManagement({
@@ -55,7 +55,7 @@ export default function CategoryManagement({
 
   const openEditDialog = (category: Category) => {
     setEditingCategory(category);
-    setName(category.name);
+    setName(category.categoryName);
     setOpenForm(true);
   };
 
@@ -71,20 +71,22 @@ export default function CategoryManagement({
 
     try {
       if (editingCategory) {
-        const { data, error } = await updateCategory(editingCategory.id, name);
-        console.log(data);
-        if (error) {
-          toast.error("This category already exists", { id: toastId });
+        const { success, message } = await updateCategory(
+          editingCategory.id,
+          name,
+        );
+        if (!success) {
+          toast.error(message, { id: toastId });
           return;
         }
-        toast.success("Category updated successfully", { id: toastId });
+        toast.success(message, { id: toastId });
       } else {
-        const { data, error } = await createCategory(name);
-        if (error) {
-          toast.error("This category already exists", { id: toastId });
+        const { success, message } = await createCategory(name);
+        if (!success) {
+          toast.error(message, { id: toastId });
           return;
         }
-        toast.success("Category created successfully", { id: toastId });
+        toast.success(message, { id: toastId });
       }
 
       setOpenForm(false);
@@ -114,7 +116,7 @@ export default function CategoryManagement({
             key={category.id}
             className="flex items-center justify-between rounded-lg border p-3"
           >
-            <span className="font-medium">{category.name}</span>
+            <span className="font-medium">{category.categoryName}</span>
 
             <div className="flex gap-2">
               <Button

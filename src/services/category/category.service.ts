@@ -27,13 +27,14 @@ const getAllCategories = async () => {
 };
 
 const deleteCategory = async (categoryId: string) => {
-  const cookieStore = await cookies();
+  const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/category/${categoryId}`, {
+    const res = await fetch(`${API_URL}/categories/${categoryId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        Authorization: token!,
       },
     });
     const data = await res.json();
@@ -48,16 +49,17 @@ const deleteCategory = async (categoryId: string) => {
   }
 };
 
-const createCategory = async (name: string) => {
-  const cookieStore = await cookies();
+const createCategory = async (categoryName: string) => {
+  const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
   try {
-    const res = await fetch(`${API_URL}/category`, {
+    const res = await fetch(`${API_URL}/categories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        Authorization: token!,
       },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ categoryName }),
     });
     const data = await res.json();
     return data;
@@ -71,16 +73,18 @@ const createCategory = async (name: string) => {
   }
 };
 
-const updateCategory = async (id: string, name: string) => {
-  const cookieStore = await cookies();
+const updateCategory = async (id: string, categoryName: string) => {
+  const cookieStorage = await cookies();
+  const cookieStore = cookieStorage.get("token")?.value;
+
   try {
-    const res = await fetch(`${API_URL}/category/${id}`, {
+    const res = await fetch(`${API_URL}/categories/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        Authorization: cookieStore!,
       },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ categoryName }),
     });
     const data = await res.json();
     return data;
