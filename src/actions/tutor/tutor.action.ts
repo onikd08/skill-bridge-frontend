@@ -39,3 +39,12 @@ export const updateAvailabilityStatus = async (id: string) => {
   updateTag("tutor-availability");
   return data;
 };
+
+export const updateTutorInfo = async (payload: {
+  imageUrl?: string | null;
+  name: string;
+}) => {
+  const data = await tutorService.updateTutorInfo(payload);
+  //updateTag("tutor-profile");
+  return data;
+};

@@ -75,6 +75,14 @@ const Navbar = ({
   },
   menu = [
     { title: "Home", url: "/" },
+    {
+      title: "Find Tutors",
+      url: "/tutors",
+    },
+    {
+      title: "About Us",
+      url: "/about",
+    },
 
     {
       title: "Dashboard",
@@ -133,7 +141,7 @@ const Navbar = ({
               </>
             ) : (
               <div className="flex items-center justify-center gap-5">
-                <p>Welcome {user.name}</p>
+                <p>Welcome</p>
                 <Button onClick={() => handleLogout()} size="sm">
                   Logout
                 </Button>

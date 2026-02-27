@@ -5,6 +5,10 @@ export const tutorRoutes: Route[] = [
     title: "Tutor Management",
     items: [
       {
+        title: "Info",
+        url: "/tutor",
+      },
+      {
         title: "Dashboard",
         url: "/tutor/dashboard",
       },

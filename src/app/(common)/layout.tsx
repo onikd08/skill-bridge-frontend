@@ -1,4 +1,5 @@
 import { getUser } from "@/actions/auth/auth.action";
+import Footer from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 
 const CommonLayout = async ({ children }: { children: React.ReactNode }) => {
@@ -8,6 +9,7 @@ const CommonLayout = async ({ children }: { children: React.ReactNode }) => {
     <div>
       <Navbar user={data} />
       {children}
+      <Footer />
     </div>
   );
 };

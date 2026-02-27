@@ -226,6 +226,34 @@ const updateAvailabilityStatus = async (id: string) => {
   }
 };
 
+const updateTutorInfo = async (payload: {
+  imageUrl?: string | null;
+  name: string;
+}) => {
+  const cookieStorage = await cookies();
+  const token = cookieStorage.get("token")?.value;
+  try {
+    const res = await fetch(`${API_URL}/users`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token!,
+      },
+      next: { tags: ["tutor-profile"] },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Profile not found",
+      },
+    };
+  }
+};
+
 const tutorService = {
   getTutorProfile,
   createTutorProfile,
@@ -237,6 +265,7 @@ const tutorService = {
   deleteAvailability,
   updateAvailabilityStatus,
   getTutorProfileByUserId,
+  updateTutorInfo,
 };
 
 export default tutorService;

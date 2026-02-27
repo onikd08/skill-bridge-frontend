@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { updateTutorInfo } from "@/actions/tutor/tutor.action";
+import { toast } from "sonner";
 
 interface Tutor {
   id: string;
@@ -19,7 +21,17 @@ export default function TutorLanding({ tutor }: { tutor: Tutor }) {
   const [imageUrl, setImageUrl] = useState<string | null>(tutor.imageUrl);
 
   const handleUpdate = async () => {
-    console.log({ name, imageUrl });
+    const toastId = toast.loading("Updating profile...");
+    if (!name.trim()) {
+      toast.error("Name is required", { id: toastId });
+      return;
+    }
+    const { success, message } = await updateTutorInfo({ imageUrl, name });
+    if (!success) {
+      toast.error(message, { id: toastId });
+      return;
+    }
+    toast.success(message, { id: toastId });
   };
 
   return (
