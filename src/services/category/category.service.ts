@@ -8,7 +8,7 @@ const getAllCategories = async () => {
   const token = cookieStorage.get("token")?.value;
   try {
     const res = await fetch(`${API_URL}/categories`, {
-      next: { tags: ["categories"] },
+      next: { tags: ["categories"], revalidate: 60 },
       headers: {
         "Content-Type": "application/json",
         Authorization: token!,

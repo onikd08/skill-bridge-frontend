@@ -26,7 +26,9 @@ export default function AllTutorsPage() {
 
   useEffect(() => {
     const fetchTutors = async () => {
-      const res = await fetch(`${API_URL}/tutors`);
+      const res = await fetch(`${API_URL}/tutors`, {
+        next: { revalidate: 180 },
+      });
       const data = await res.json();
       setTutors(data?.data || []);
     };

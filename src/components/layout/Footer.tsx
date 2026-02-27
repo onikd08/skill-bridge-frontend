@@ -43,7 +43,7 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-lg mb-4">Contact</h3>
             <p className="text-indigo-100 text-sm">
-              📧 support@tutorconnect.com
+              📧 support@skill-bridge.com
             </p>
             <p className="text-indigo-100 text-sm mt-2">📍 Dhaka, Bangladesh</p>
           </div>
@@ -54,7 +54,7 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-indigo-200">
-          <p>© {new Date().getFullYear()} TutorConnect. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Skill-Bridge. All rights reserved.</p>
 
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="#" className="hover:text-white transition">

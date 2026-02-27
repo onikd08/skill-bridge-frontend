@@ -44,7 +44,7 @@ export default function AboutPage() {
       {/* Why Choose Us */}
       <section className="bg-white py-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-12">Why Choose TutorConnect?</h2>
+          <h2 className="text-3xl font-bold mb-12">Why Choose Skill-bridge?</h2>
 
           <div className="grid md:grid-cols-3 gap-10">
             <div className="p-6 rounded-2xl shadow hover:shadow-lg transition">
@@ -100,12 +100,12 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-16 px-6 text-center">
+      <section className="bg-linear-to-r from-purple-600 to-indigo-600 text-white py-16 px-6 text-center">
         <h2 className="text-3xl font-bold">
           Ready to Start Your Learning Journey?
         </h2>
         <p className="mt-4 text-indigo-100">
-          Join TutorConnect today and experience smarter learning.
+          Join Skill-bridge today and experience smarter learning.
         </p>
         <div className="mt-6">
           <a

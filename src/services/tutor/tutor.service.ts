@@ -41,7 +41,7 @@ const getTutorProfileByUserId = async () => {
     return {
       data: null,
       error: {
-        message: "Profile not found",
+        message: "Something went wrong",
       },
     };
   }
@@ -83,7 +83,7 @@ const getTutorAvailability = async () => {
         "Content-Type": "application/json",
         Authorization: token!,
       },
-      next: { tags: ["tutor-availability"] },
+      next: { tags: ["tutor-availability"], revalidate: 60 },
     });
     const data = await res.json();
     return data;
@@ -99,7 +99,7 @@ const getTutorAvailability = async () => {
 
 const getAllTutors = async () => {
   try {
-    const res = await fetch(`${API_URL}/tutors`);
+    const res = await fetch(`${API_URL}/tutors`, { next: { revalidate: 180 } });
     const data = await res.json();
     return data;
   } catch (error) {

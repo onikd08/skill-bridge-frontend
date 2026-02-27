@@ -3,27 +3,26 @@ import type { NextRequest } from "next/server";
 import { getUser } from "./actions/auth/auth.action";
 
 export async function proxy(request: NextRequest) {
-  let isAuthenticated = false;
   const pathname = request.nextUrl.pathname;
   const userData = await getUser();
   const role = userData?.role;
+  const isAuthenticated = !!userData;
 
-  if (userData) {
-    isAuthenticated = true;
-  }
+  // 🔓 Public routes
+  const isPublicRoute =
+    pathname.startsWith("/login") || pathname.startsWith("/register");
 
-  // If user is logged in and tries to access login or register
-  if (
-    isAuthenticated &&
-    (pathname.startsWith("/login") || pathname.startsWith("/register"))
-  ) {
+  // ✅ If logged in user tries to visit login/register
+  if (isAuthenticated && isPublicRoute) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!isAuthenticated) {
+  // ✅ If NOT logged in and trying to access protected route
+  if (!isAuthenticated && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // 🔐 Role based restrictions
   if (
     role === "ADMIN" &&
     (pathname.startsWith("/dashboard") || pathname.startsWith("/tutor"))
@@ -50,11 +49,8 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/dashboard",
     "/dashboard/:path*",
-    "/admin",
     "/admin/:path*",
-    "/tutor",
     "/tutor/:path*",
     "/login",
     "/register",
