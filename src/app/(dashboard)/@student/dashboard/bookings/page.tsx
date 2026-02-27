@@ -1,8 +1,8 @@
-import { getMyBookings } from "@/actions/student/student.action";
+import { getAllBookings } from "@/actions/bookings/bookings.action";
 import BookingsList from "@/components/modules/students/BookingList";
 
 const StudentBookingsPage = async () => {
-  const { data, success } = await getMyBookings();
+  const { data, success } = await getAllBookings();
 
   return (
     <div>

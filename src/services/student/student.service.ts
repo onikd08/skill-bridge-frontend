@@ -34,29 +34,6 @@ const bookSlot = async (payload: {
   }
 };
 
-const getMyBookings = async () => {
-  const cookieStorage = await cookies();
-  const token = cookieStorage.get("token")?.value;
-  try {
-    const res = await fetch(`${API_URL}/bookings/my-bookings`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token!,
-      },
-      next: { tags: ["bookings"] },
-    });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    return {
-      data: null,
-      error: {
-        message: "Profile not found",
-      },
-    };
-  }
-};
-
 const cancelBooking = async (bookingId: string) => {
   const cookieStorage = await cookies();
   const token = cookieStorage.get("token")?.value;
@@ -174,7 +151,6 @@ const createReview = async (payload: {
 const studentService = {
   bookSlot,
   cancelBooking,
-  getMyBookings,
   updateStudentInfo,
   getMyInfo,
   createReview,

@@ -12,11 +12,6 @@ export const bookSlot = async (payload: {
   return data;
 };
 
-export const getMyBookings = async () => {
-  const data = await studentService.getMyBookings();
-  return data;
-};
-
 export const cancelBooking = async (bookingId: string) => {
   const data = await studentService.cancelBooking(bookingId);
   updateTag("bookings");

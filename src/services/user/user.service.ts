@@ -60,9 +60,9 @@ const updateUserStatus = async (userId: string) => {
         "Content-Type": "application/json",
         Authorization: token!,
       },
+      next: { tags: ["users"], revalidate: 60 },
     });
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     return {
