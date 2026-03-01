@@ -12,7 +12,6 @@ const getAllBookings = async () => {
         "Content-Type": "application/json",
         Authorization: token!,
       },
-      next: { revalidate: 60 },
     });
     const data = await res.json();
     return data;
