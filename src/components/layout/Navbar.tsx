@@ -73,22 +73,7 @@ const Navbar = ({
     alt: "logo",
     title: "Skill-Bridge",
   },
-  menu = [
-    { title: "Home", url: "/" },
-    {
-      title: "Find Tutors",
-      url: "/tutors",
-    },
-    {
-      title: "About Us",
-      url: "/about",
-    },
-
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-    },
-  ],
+  menu,
   auth = {
     login: { title: "Login", url: "/login" },
     signup: { title: "Register", url: "/register" },
@@ -97,10 +82,31 @@ const Navbar = ({
 }: Navbar1Props) => {
   const router = useRouter();
 
+  const roleUpper = String(user?.role ?? "").toUpperCase();
+
+  const effectiveMenu: MenuItem[] =
+    menu && menu.length
+      ? menu
+      : [
+          { title: "Home", url: "/" },
+          { title: "Find Tutors", url: "/tutors" },
+          { title: "About", url: "/about" },
+          {
+            title: "Dashboard",
+            url:
+              roleUpper === "ADMIN"
+                ? "/admin"
+                : roleUpper === "TUTOR"
+                  ? "/tutor"
+                  : "/student",
+          },
+        ];
+
   const handleLogout = async () => {
     await logoutUser();
     router.push("/login");
   };
+
   return (
     <section className={cn("py-4", className)}>
       <div className="container mx-auto px-4">
@@ -123,7 +129,7 @@ const Navbar = ({
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
+                  {effectiveMenu.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
@@ -141,7 +147,7 @@ const Navbar = ({
               </>
             ) : (
               <div className="flex items-center justify-center gap-5">
-                <p>Welcome</p>
+                <p>Welcome {user.name}</p>
                 <Button onClick={() => handleLogout()} size="sm">
                   Logout
                 </Button>
@@ -189,7 +195,7 @@ const Navbar = ({
                     collapsible
                     className="flex w-full flex-col gap-4"
                   >
-                    {menu.map((item) => renderMobileMenuItem(item))}
+                    {effectiveMenu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
