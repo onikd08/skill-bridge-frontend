@@ -6,6 +6,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Roles } from "@/constants/roles";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   admin,
@@ -17,6 +18,10 @@ export default async function DashboardLayout({
   student: React.ReactNode;
 }) {
   const userInfo = await getUser();
+
+  if (!userInfo) {
+    redirect("/login");
+  }
 
   return (
     <SidebarProvider>
