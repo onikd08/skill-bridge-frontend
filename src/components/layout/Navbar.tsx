@@ -99,7 +99,7 @@ const Navbar = ({
                 : roleUpper === "TUTOR"
                   ? "/tutor"
                   : roleUpper === "STUDENT"
-                    ? "/student"
+                    ? "/dashboard"
                     : "/login",
           },
         ];
