@@ -16,6 +16,14 @@ It communicates with the SkillBridge Backend API.
 
 ---
 
+## 🔐 Admin credentials
+
+Email: admin@email.com
+
+Password: admin1234
+
+---
+
 ## 🛠️ Tech Stack
 
 - Next.js
@@ -199,4 +207,4 @@ axios.get("/tutors")
 
 Anik Das
 
-Skill-Bridge Backend API
+Skill-Bridge Frontend Application
