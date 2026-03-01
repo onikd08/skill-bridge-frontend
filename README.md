@@ -1,36 +1,202 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎨 SkillBridge-Frontend
 
-## Getting Started
+"Connect with Expert Tutors, Learn Anything"
 
-First, run the development server:
+---
+
+## 📌 Overview
+
+SkillBridge Frontend is a responsive web application that allows:
+
+- Students to book tutoring sessions
+- Tutors to manage their services
+- Admins to monitor the platform
+
+It communicates with the SkillBridge Backend API.
+
+---
+
+## 🛠️ Tech Stack
+
+- Next.js
+- Tailwind CSS
+- JWT Authentication
+- Shadcn
+
+---
+
+## 📁 Project Structure
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+src/
+ ├── actions/
+ |    └──auth/
+ |    └──bookings/
+ |    └──category/
+ |    └──student/
+ |    └──tutor/
+ |    └──user/
+ |
+ ├── app/
+ │    └── (common)
+ │    └── (dashboard)
+ |
+ ├── components/
+ |
+ ├── constants/
+ │    └── roles.ts
+ |
+ ├── lib/
+ │    └── utils.ts
+ |
+ ├── providers/
+ │    └── ThemeProvider.tsx
+ |
+ ├── services/
+ |    └──auth/
+ |    └──bookings/
+ |    └──category/
+ |    └──student/
+ |    └──tutor/
+ |    └──user/
+ |
+ ├── routes/
+ │    └── adminRoutes.ts
+ │    └── studentRoutes.ts
+ │    └── tutorRoutes.ts
+ |
+ ├── types/
+ │    └── index.ts
+ │    └── routes.type.ts
+ |
+ ├── proxy.ts
+
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Installation & Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Clone repository
+git clone https://github.com/onikd08/skill-bridge-frontend
 
-## Learn More
+# Navigate to frontend
+cd skill-bridge-frontend
 
-To learn more about Next.js, take a look at the following resources:
+# Install dependencies
+npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start development server
+npm run dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+App runs on
+http://localhost:3000
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🌐 Application Routes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### Public Routes
+
+| Route         | Description   |
+| ------------- | ------------- |
+| `/`           | Home          |
+| `/tutors`     | Browse tutors |
+| `/tutors/:id` | Tutor profile |
+| `/login`      | Login         |
+| `/register`   | Register      |
+
+#### Student Dashboard
+
+| Route                 | Description     |
+| --------------------- | --------------- |
+| `/dashboard`          | Overview        |
+| `/dashboard/bookings` | Booking history |
+| `/dashboard/profile`  | Edit profile    |
+
+#### Tutor Dashboard
+
+| Route                 | Description             |
+| --------------------- | ----------------------- |
+| `/tutor`              | Overview or update info |
+| `/tutor/availability` | Display availability    |
+| `/tutor/profile`      | Edit or Set profile     |
+
+#### Admin Dashboard
+
+| Route               | Description       |
+| ------------------- | ----------------- |
+| `/admin`            | Stats analytics   |
+| `/admin/users`      | Manage users      |
+| `/admin/bookings`   | View bookings     |
+| `/admin/categories` | Manage categories |
+
+---
+
+## 🔐 Authentication Flow
+
+User registers (student or tutor)
+
+JWT token stored in cookies
+
+Protected routes require valid token
+
+Role-based route protection implemented
+
+---
+
+## 🎨Features
+
+#### Public
+
+- Browse tutors
+- Search & filter
+- View tutor profiles and ratings
+
+#### Student
+
+- Book sessions
+- View history
+- Leave reviews
+
+#### Tutor
+
+- Manage profile
+- Set availability
+- View sessions
+
+#### Admin
+
+- Manage users
+- View bookings
+- Manage categories
+
+---
+
+## 🔗 API Integration
+
+```bash
+Base URL:
+https://skill-bridge-backend-iota.vercel.app/api
+Example:
+axios.get("/tutors")
+```
+
+---
+
+## 📱 Responsive Design
+
+- Mobile-first design
+- Tablet and desktop support
+- Clean dashboard UI
+
+---
+
+## 👨‍💻 Author
+
+Anik Das
+
+Skill-Bridge Backend API
