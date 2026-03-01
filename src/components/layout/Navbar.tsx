@@ -98,7 +98,9 @@ const Navbar = ({
                 ? "/admin"
                 : roleUpper === "TUTOR"
                   ? "/tutor"
-                  : "/student",
+                  : roleUpper === "STUDENT"
+                    ? "/student"
+                    : "/login",
           },
         ];
 
