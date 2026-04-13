@@ -109,7 +109,7 @@ export default function TutorBookingCard({
               >
                 {slot.isBooked ? "Already Booked" : "Available"}
               </span>
-              <span>${slot.totalPrice}</span>
+              <span>${slot.totalPrice.toFixed(2)}</span>
               <span>
                 {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
               </span>

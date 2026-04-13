@@ -57,10 +57,10 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} Skill-Bridge. All rights reserved.</p>
 
           <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-white transition">
+            <Link href="/privacy" className="hover:text-white transition">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-white transition">
+            <Link href="/terms" className="hover:text-white transition">
               Terms of Service
             </Link>
           </div>
