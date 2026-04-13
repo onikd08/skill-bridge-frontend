@@ -110,6 +110,10 @@ const Navbar = ({
             title: "T&C",
             url: "/terms",
           },
+          {
+            title: "Contact Us",
+            url: "/contact",
+          },
         ];
 
   const handleLogout = async () => {
