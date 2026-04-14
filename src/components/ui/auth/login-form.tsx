@@ -83,6 +83,34 @@ export function LoginForm({
         </CardHeader>
 
         <CardContent className="grid gap-6 p-8 pt-4">
+          {/* Demo Auto-fill Buttons */}
+          <div className="grid grid-cols-2 gap-3 mb-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-14 flex flex-col items-center justify-center gap-0.5 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 transition-all rounded-xl"
+              onClick={() => {
+                form.setFieldValue("email", "admin@email.com");
+                form.setFieldValue("password", "admin1234");
+              }}
+            >
+              <span className="text-xs font-bold text-foreground">Admin Demo</span>
+              <span className="text-[10px] text-muted-foreground">admin@email.com</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-14 flex flex-col items-center justify-center gap-0.5 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 transition-all rounded-xl"
+              onClick={() => {
+                form.setFieldValue("email", "student1@gmail.com");
+                form.setFieldValue("password", "12345678");
+              }}
+            >
+              <span className="text-xs font-bold text-foreground">Student Demo</span>
+              <span className="text-[10px] text-muted-foreground">student1@gmail.com</span>
+            </Button>
+          </div>
+
           <form
             id="login-form"
             onSubmit={(e) => {
