@@ -15,3 +15,8 @@ export const updateUserStatus = async (userId: string) => {
   const data = await userService.updateUserStatus(userId);
   return data;
 };
+
+export const getStudentById = async (userId: string) => {
+  const data = await userService.getStudentById(userId);
+  return data;
+};

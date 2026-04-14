@@ -73,10 +73,30 @@ const updateUserStatus = async (userId: string) => {
     };
   }
 };
+
+const getStudentById = async (userId: string) => {
+  try {
+    const res = await fetch(`${API_URL}/users/student/${userId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Something went wrong",
+      },
+    };
+  }
+};
 const userService = {
   getAllUsers,
   updateIsFeatured,
   updateUserStatus,
+  getStudentById,
 };
 
 export default userService;

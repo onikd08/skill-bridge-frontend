@@ -46,7 +46,7 @@ export default function TutorBookingCard({
     email: string;
     role: string;
     status: string;
-    image: string | null;
+    imageUrl: string | null;
   };
 }) {
   const [selected, setSelected] = useState<Availability | null>(null);
@@ -185,7 +185,7 @@ export default function TutorBookingCard({
                   </span>
                 </div>
                 <div className="flex justify-between text-sm border-t pt-2 mt-2">
-                  <span className="text-muted-foreground font-bold text-foreground">
+                  <span className="text-muted-foreground font-bold">
                     Total:
                   </span>
                   <span className="font-bold text-primary text-lg">
