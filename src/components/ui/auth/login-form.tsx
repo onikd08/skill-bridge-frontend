@@ -21,7 +21,7 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
@@ -71,8 +71,6 @@ export function LoginForm({
         )}
         {...props}
       >
-        {/* Aesthetic Gradient Top Bar */}
-
         <CardHeader className="space-y-2 pt-10 text-center">
           <CardTitle className="text-3xl font-bold tracking-tight">
             Login
@@ -90,24 +88,51 @@ export function LoginForm({
               variant="outline"
               className="h-14 flex flex-col items-center justify-center gap-0.5 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 transition-all rounded-xl"
               onClick={() => {
-                form.setFieldValue("email", "admin@email.com");
-                form.setFieldValue("password", "admin1234");
+                form.setFieldValue("email", "student1@gmail.com");
+                form.setFieldValue("password", "12345678");
               }}
             >
-              <span className="text-xs font-bold text-foreground">Admin Demo</span>
-              <span className="text-[10px] text-muted-foreground">admin@email.com</span>
+              <span className="text-xs font-bold text-foreground">
+                Student Demo
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                student1@gmail.com
+              </span>
             </Button>
             <Button
               type="button"
               variant="outline"
               className="h-14 flex flex-col items-center justify-center gap-0.5 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 transition-all rounded-xl"
               onClick={() => {
-                form.setFieldValue("email", "student1@gmail.com");
+                form.setFieldValue("email", "tutor1@gmail.com");
                 form.setFieldValue("password", "12345678");
               }}
             >
-              <span className="text-xs font-bold text-foreground">Student Demo</span>
-              <span className="text-[10px] text-muted-foreground">student1@gmail.com</span>
+              <span className="text-xs font-bold text-foreground">
+                Tutor Demo
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                tutor1@gmail.com
+              </span>
+            </Button>
+          </div>
+
+          <div className="flex justify-center">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-14 flex flex-col items-center justify-center gap-0.5 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 transition-all rounded-xl"
+              onClick={() => {
+                form.setFieldValue("email", "admin@email.com");
+                form.setFieldValue("password", "admin1234");
+              }}
+            >
+              <span className="text-xs font-bold text-foreground">
+                Admin Demo
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                admin@email.com
+              </span>
             </Button>
           </div>
 

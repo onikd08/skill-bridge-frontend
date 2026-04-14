@@ -2,8 +2,8 @@ import { getMyInfo } from "@/actions/student/student.action";
 import TutorLandingPage from "@/components/modules/tutor/TutorLandingPage";
 
 export const metadata = {
-  title: "Tutor Dashboard - SkillBridge",
-  description: "Tutor Dashboard - SkillBridge",
+  title: "My Information - SkillBridge",
+  description: "My Information - SkillBridge",
 };
 
 const page = async () => {
