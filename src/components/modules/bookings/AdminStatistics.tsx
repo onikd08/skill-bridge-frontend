@@ -70,7 +70,7 @@ export default function AdminStatistics({ bookings }: { bookings: Booking[] }) {
 
     return Object.entries(map).map(([date, revenue]) => ({
       date,
-      revenue,
+      revenue: revenue.toFixed(2),
     }));
   }, [bookings]);
 

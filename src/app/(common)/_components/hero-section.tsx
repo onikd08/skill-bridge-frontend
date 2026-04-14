@@ -24,7 +24,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-[70vh] min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Background Carousel */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="popLayout">
