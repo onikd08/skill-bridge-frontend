@@ -92,11 +92,12 @@ export function HeroSection() {
             <Link href="/tutors">Find a Tutor</Link>
           </Button>
           <Button
+            asChild
             size="lg"
             variant="outline"
             className="h-12 px-8 text-base bg-white/10 text-white border-white/30 hover:bg-white hover:text-black hover:border-white transition-all backdrop-blur-sm"
           >
-            Become a Tutor
+            <Link href="/register?role=TUTOR">Become a Tutor</Link>
           </Button>
         </motion.div>
       </div>

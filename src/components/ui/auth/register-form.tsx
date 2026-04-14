@@ -58,8 +58,9 @@ const formSchema = z
 
 export function RegisterForm({
   className,
+  role,
   ...props
-}: React.ComponentProps<typeof Card>) {
+}: React.ComponentProps<typeof Card> & { role?: string }) {
   const router = useRouter();
 
   const form = useForm({
@@ -68,7 +69,7 @@ export function RegisterForm({
       email: "",
       password: "",
       confirmPassword: "",
-      role: "STUDENT" as "STUDENT" | "TUTOR",
+      role: (role?.toUpperCase() === "TUTOR" ? "TUTOR" : "STUDENT") as "STUDENT" | "TUTOR",
     },
     validators: {
       onChange: formSchema,

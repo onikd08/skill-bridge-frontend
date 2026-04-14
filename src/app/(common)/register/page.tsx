@@ -5,10 +5,15 @@ export const metadata = {
   description: "Register to SkillBridge",
 };
 
-const RegisterPage = () => {
+const RegisterPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ role?: string }>;
+}) => {
+  const { role } = await searchParams;
   return (
     <div className="mx-auto max-w-2xl mt-16">
-      <RegisterForm></RegisterForm>
+      <RegisterForm role={role}></RegisterForm>
     </div>
   );
 };
