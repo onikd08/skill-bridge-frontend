@@ -102,7 +102,7 @@ export default function TutorBookingCard({
 
         {availability?.map((slot) => (
           <button
-            disabled={slot.isBooked}
+            disabled={slot.isBooked || new Date(slot.startTime) < new Date()}
             key={slot.id}
             onClick={() => setSelected(slot)}
             className={cn(
