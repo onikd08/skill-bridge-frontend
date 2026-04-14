@@ -25,6 +25,15 @@ import { ThemeModeToggle } from "./ThemeModeToggle";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/actions/auth/auth.action";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface MenuItem {
   title: string;
@@ -40,6 +49,7 @@ interface IUser {
   email: string;
   role: string;
   status: string;
+  imageUrl: string;
 }
 
 interface Navbar1Props {
@@ -91,25 +101,14 @@ const Navbar = ({
           { title: "Home", url: "/" },
           { title: "Find Tutors", url: "/tutors" },
           { title: "About", url: "/about" },
-          {
-            title: "Dashboard",
-            url:
-              roleUpper === "ADMIN"
-                ? "/admin"
-                : roleUpper === "TUTOR"
-                  ? "/tutor"
-                  : roleUpper === "STUDENT"
-                    ? "/dashboard"
-                    : "/login",
-          },
-          {
-            title: "Privacy Policy",
-            url: "/privacy",
-          },
-          {
-            title: "T&C",
-            url: "/terms",
-          },
+          // {
+          //   title: "Privacy Policy",
+          //   url: "/privacy",
+          // },
+          // {
+          //   title: "T&C",
+          //   url: "/terms",
+          // },
           {
             title: "Contact Us",
             url: "/contact",
@@ -155,22 +154,128 @@ const Navbar = ({
           </div>
           <div className="flex gap-2">
             <ThemeModeToggle />
-            {!user ? (
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 rounded-full ring-2 ring-primary/20 transition-all hover:ring-primary/40 focus:ring-primary/60 focus:outline-none">
+                  <Avatar className="h-9 w-9 border border-border">
+                    <AvatarImage src={user?.imageUrl} alt={user.name} />
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {user.name[0].toUpperCase()}
+                      {user.name[1].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm leading-none font-medium">
+                        {user.name}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={
+                        roleUpper === "ADMIN"
+                          ? "/admin"
+                          : roleUpper === "TUTOR"
+                            ? "/tutor/dashboard"
+                            : "/dashboard"
+                      }
+                      className="w-full cursor-pointer"
+                    >
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  {roleUpper === "TUTOR" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tutor" className="w-full cursor-pointer">
+                          My Info
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/tutor/profile"
+                          className="w-full cursor-pointer"
+                        >
+                          Profile
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  {roleUpper === "STUDENT" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/dashboard/profile"
+                          className="w-full cursor-pointer"
+                        >
+                          Profile
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/dashboard/bookings"
+                          className="w-full cursor-pointer"
+                        >
+                          Bookings
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+
+                  {roleUpper === "ADMIN" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/admin/users"
+                          className="w-full cursor-pointer"
+                        >
+                          Manage Users
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/admin/bookings"
+                          className="w-full cursor-pointer"
+                        >
+                          All Bookings
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href="/admin/categories"
+                          className="w-full cursor-pointer"
+                        >
+                          Manage Categories
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="w-full cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+                  >
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
               <>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={auth.login.url}>{auth.login.title}</Link>
+                <Button asChild variant="outline">
+                  <Link href="/login">Sign In</Link>
                 </Button>
-                <Button asChild size="sm">
-                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                <Button asChild variant="outline">
+                  <Link href="/register">Register</Link>
                 </Button>
               </>
-            ) : (
-              <div className="flex items-center justify-center gap-5">
-                <p>Welcome {user.name}</p>
-                <Button onClick={() => handleLogout()} size="sm">
-                  Logout
-                </Button>
-              </div>
             )}
           </div>
         </nav>
@@ -231,7 +336,19 @@ const Navbar = ({
                       </>
                     ) : (
                       <div className="flex items-center justify-center gap-5">
-                        <p>Welcome {user.name}</p>
+                        <Button asChild variant="outline" size="sm">
+                          <Link
+                            href={
+                              roleUpper === "ADMIN"
+                                ? "/admin"
+                                : roleUpper === "TUTOR"
+                                  ? "/tutor"
+                                  : "/dashboard"
+                            }
+                          >
+                            My Dashboard
+                          </Link>
+                        </Button>
                         <Button onClick={() => handleLogout()} size="sm">
                           Logout
                         </Button>
