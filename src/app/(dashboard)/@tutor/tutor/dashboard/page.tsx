@@ -1,6 +1,11 @@
 import TutorDashboard from "@/components/modules/tutor/TutorDashboard";
 import tutorService from "@/services/tutor/tutor.service";
 
+export const metadata = {
+  title: "Tutor Dashboard - SkillBridge",
+  description: "Tutor Dashboard - SkillBridge",
+};
+
 const TutorDashboardPage = async () => {
   const { data: tutor } = await tutorService.getTutorProfileByUserId();
 

@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 
 // Utils
 import { cn, getInitials } from "@/lib/utils";
-import { Tutor } from "../tutors/page";
+import { Tutor } from "./AllTutorsPage";
 
 interface TutorCardProps {
   tutor: Tutor;

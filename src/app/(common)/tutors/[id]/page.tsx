@@ -5,6 +5,11 @@ import tutorService from "@/services/tutor/tutor.service";
 import TutorReviewsCard from "@/components/modules/tutor/TutorReviewsCard";
 import { getStudentById } from "@/actions/user/user.action";
 
+export const metadata = {
+  title: "Tutor Profile - SkillBridge",
+  description: "Tutor Profile - SkillBridge",
+};
+
 const TutorProfilePage = async ({
   params,
 }: {

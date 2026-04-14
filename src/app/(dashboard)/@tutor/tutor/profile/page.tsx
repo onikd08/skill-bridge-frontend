@@ -3,6 +3,11 @@ import { getAllCategories } from "@/actions/category/category.action";
 import TutorProfileForm from "@/components/modules/tutor/TutorProfileForm";
 import tutorService from "@/services/tutor/tutor.service";
 
+export const metadata = {
+  title: "Tutor Profile - SkillBridge",
+  description: "Tutor Profile - SkillBridge",
+};
+
 const TutorProfilePage = async () => {
   const categories = await getAllCategories();
   const userData = await getUser();

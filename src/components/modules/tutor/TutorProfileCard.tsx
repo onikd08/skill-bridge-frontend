@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, CheckCircle2 } from "lucide-react";
-import { Tutor } from "@/app/(common)/tutors/page";
 import { getInitials } from "@/lib/utils"; // Assuming you have this util
+import { Tutor } from "@/app/(common)/_components/AllTutorsPage";
 
 interface ICategory {
   id: string;

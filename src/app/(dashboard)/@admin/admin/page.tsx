@@ -1,6 +1,11 @@
 import { getAllBookings } from "@/actions/bookings/bookings.action";
 import AdminStatistics from "@/components/modules/bookings/AdminStatistics";
 
+export const metadata = {
+  title: "Admin Dashboard - SkillBridge",
+  description: "Admin Dashboard - SkillBridge",
+};
+
 const AdminDashboardPage = async () => {
   const { data, success } = await getAllBookings();
 
